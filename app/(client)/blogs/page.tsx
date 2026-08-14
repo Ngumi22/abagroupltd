@@ -24,7 +24,7 @@ export default function BlogsPage() {
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {blogs.map((blog) => (
             <Link
-              href="#"
+              href={`/blogs/${blog.title}`}
               key={blog.title}
               className="group relative min-h-72 overflow-hidden border border-ink/10"
             >
