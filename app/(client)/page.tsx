@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import {
   AboutTeaser,
   BlogsTeaser,
-  Contact,
   Hero,
   Process,
   ProjectsPreview,
   ServicesTeaser,
   Stats,
 } from "@/components/site/sections";
+import { Contact } from "@/components/site/contact";
 
 export const metadata: Metadata = {
   title: "Aba Group Ltd | Construction & Development in Kenya",

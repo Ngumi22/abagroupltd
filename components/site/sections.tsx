@@ -12,7 +12,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-150 items-end overflow-hidden bg-ink pb-14 pt-24 sm:min-h-160 sm:pb-16 sm:pt-28 lg:min-h-167.5 lg:pb-20 lg:pt-32"
+      className="relative flex min-h-130 items-end overflow-hidden bg-ink pb-14 pt-10 sm:min-h-160 sm:pb-16 sm:pt-28 lg:min-h-150 lg:pb-20 lg:pt-32"
     >
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,17,19,.98)_0%,rgba(12,17,19,.76)_40%,rgba(12,17,19,.08)_100%),linear-gradient(0deg,rgba(12,17,19,.7),transparent_45%),url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=90')] bg-cover bg-center" />
       <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-5 lg:grid-cols-[1fr_360px] lg:px-10">
@@ -271,97 +271,6 @@ export function BlogsTeaser() {
             </a>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-export function Contact() {
-  const [sent, setSent] = useState(false);
-  return (
-    <section
-      id="contact"
-      className="scroll-mt-(--header-h) bg-bronze pt-6 pb-20 text-ink lg:pt-8 lg:pb-24"
-    >
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-[.9fr_1.1fr] lg:px-10">
-        <div>
-          <SectionLabel>Start a conversation</SectionLabel>
-          <h2 className="font-serif text-5xl leading-none sm:text-6xl">
-            Let&apos;s build
-            <br />
-            <em className="text-paper not-italic">something</em>
-            <br />
-            lasting.
-          </h2>
-          <p className="mt-6 max-w-sm text-sm leading-6 text-ink/65">
-            Tell us a little about your project and our team will be in touch
-            within one business day.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 text-sm">
-            <Link
-              href={`tel:${SITE.phone.replaceAll(" ", "")}`}
-              className="flex items-center gap-3"
-            >
-              <Phone size={16} /> {SITE.phone}
-            </Link>
-            <Link href={`mailto:${SITE.email}`}>{SITE.email}</Link>
-          </div>
-        </div>
-        {sent ? (
-          <div className="flex min-h-80 flex-col justify-center border border-ink/20 p-8">
-            <Check size={30} />
-            <h3 className="mt-5 font-serif text-3xl">
-              We&apos;ll be in touch.
-            </h3>
-            <p className="mt-2 text-sm text-ink/65">
-              Thank you for trusting Aba Group with the first step.
-            </p>
-            <button
-              onClick={() => setSent(false)}
-              className="mt-6 w-fit border-b border-ink pb-1 text-[10px] uppercase tracking-widest"
-            >
-              Send another message
-            </button>
-          </div>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
-            className="grid gap-4 border border-ink/20 p-6 sm:grid-cols-2"
-          >
-            <label className="text-[10px] uppercase tracking-widest">
-              Your name
-              <input
-                required
-                className="mt-2 w-full border-b border-ink/30 bg-transparent py-3 text-sm outline-none placeholder:text-ink/40"
-                placeholder="Jane Mwangi"
-              />
-            </label>
-            <label className="text-[10px] uppercase tracking-widest">
-              Email address
-              <input
-                type="email"
-                required
-                className="mt-2 w-full border-b border-ink/30 bg-transparent py-3 text-sm outline-none placeholder:text-ink/40"
-                placeholder="jane@email.com"
-              />
-            </label>
-            <label className="text-[10px] uppercase tracking-widest sm:col-span-2">
-              Tell us about the project
-              <textarea
-                required
-                rows={3}
-                className="mt-2 w-full resize-none border-b border-ink/30 bg-transparent py-3 text-sm outline-none placeholder:text-ink/40"
-                placeholder="A few details about your project..."
-              />
-            </label>
-            <button className="inline-flex w-fit items-center gap-3 border border-ink bg-ink px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-paper transition hover:bg-ink-soft sm:col-span-2">
-              Send enquiry <ArrowUpRight size={15} />
-            </button>
-          </form>
-        )}
       </div>
     </section>
   );

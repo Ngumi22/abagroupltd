@@ -42,6 +42,8 @@ export const projects: Project[] = [
       "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1400&q=85",
     ],
     scope: ["Commercial build", "Project management", "Landscape coordination"],
+    progress: 62,
+    deliveryStatus: "On track",
   },
   {
     slug: "muthaiga-villa",
@@ -65,6 +67,8 @@ export const projects: Project[] = [
       "Interiors",
       "Client-side coordination",
     ],
+    progress: 100,
+    deliveryStatus: "Completed",
   },
   {
     slug: "athi-river-offices",
@@ -84,6 +88,8 @@ export const projects: Project[] = [
       "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1400&q=85",
     ],
     scope: ["Commercial build", "Space planning", "Construction delivery"],
+    progress: 100,
+    deliveryStatus: "Completed",
   },
 ];
 
