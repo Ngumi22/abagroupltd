@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
+    qualities: [75, 85, 90, 100],
+    remotePatterns: [
+      { protocol: "https", hostname: "*.imagekit.io" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+    ],
   },
 };
 

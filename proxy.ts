@@ -1,3 +1,4 @@
+// proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
@@ -21,7 +22,7 @@ const applySecurityHeaders = (headers: Headers, csp: string) => {
   headers.set("X-XSS-Protection", "1; mode=block");
 };
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const startTime = Date.now();
   const path = request.nextUrl.pathname;
 
@@ -30,7 +31,7 @@ export function proxy(request: NextRequest) {
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${isDev ? " 'unsafe-eval'" : ""};
     object-src 'none';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://*.imagekit.io https://www.google-analytics.com https://www.googletagmanager.com;
+    img-src 'self' blob: data: https://*.imagekit.io https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com;
     font-src 'self' https://fonts.gstatic.com;
     connect-src 'self' https://upload.imagekit.io https://*.imagekit.io https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com;
     base-uri 'self';
