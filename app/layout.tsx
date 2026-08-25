@@ -31,7 +31,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Aba Group Ltd" }],
   robots: { index: true, follow: true },
+  verification: {
+    google: "1RBRShyPWI9sqPKtnS8QVBDvCYvCVcQSaJqi0sf54SQ",
+  },
 };
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
