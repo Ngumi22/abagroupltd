@@ -23,13 +23,13 @@ export function DashboardOverview({
           <p className="text-[10px] uppercase tracking-[.2em] text-bronze-dark">
             Overview
           </p>
-          <h2 className="mt-2 font-serif text-4xl">
+          <h2 className="mt-2 font-serif text-base md:text-xl lg:text-2xl">
             Your business at a glance.
           </h2>
         </div>
         <Link
           href="/admin/projects/new"
-          className="flex items-center gap-2 bg-ink px-4 py-3 text-[10px] uppercase tracking-widest text-paper"
+          className="flex items-center gap-2 bg-ink px-2 py-2 md:px-4 md:py-3 text-[10px] uppercase tracking-widest text-paper"
         >
           <Plus size={15} /> Add project
         </Link>

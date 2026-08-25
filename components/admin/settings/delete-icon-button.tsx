@@ -1,4 +1,3 @@
-// components/admin/settings/delete-icon-button.tsx
 "use client";
 
 import { useTransition } from "react";
@@ -22,7 +21,7 @@ export function DeleteIconButton({
         if (!window.confirm(confirmMessage)) return;
         startTransition(onDelete);
       }}
-      className="text-ink/40 transition hover:text-red-700 disabled:opacity-40"
+      className="text-ink/40 transition hover:text-red-700 disabled:opacity-40 shrink-0 ml-2"
     >
       <Trash2 size={15} />
     </button>

@@ -28,34 +28,41 @@ export function SettingsSection({
   }, [count]);
 
   return (
-    <section className="border border-ink/10 bg-white/40 p-6">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Icon size={18} className="text-bronze-dark" />
-          <h2 className="font-serif text-2xl">{title}</h2>
-          <span className="text-xs text-ink/40">{count}</span>
+    <section className="border border-ink/10 bg-white/40 p-4 transition-colors hover:bg-white/50 sm:p-5 md:p-6">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          <Icon
+            size={16}
+            className="shrink-0 text-bronze-dark sm:h-4.5 sm:w-4.5"
+          />
+          <h2 className="truncate font-serif text-xl sm:text-2xl">{title}</h2>
+          <span className="shrink-0 text-[10px] text-ink/40 sm:text-xs">
+            {count}
+          </span>
         </div>
         <button
           type="button"
           onClick={() => setIsAdding((v) => !v)}
-          className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-ink/60 transition hover:text-ink"
+          className="flex shrink-0 items-center gap-1 text-[9px] uppercase tracking-widest text-ink/60 transition hover:text-ink sm:text-[10px]"
         >
           {isAdding ? (
             <>
-              <X size={13} /> Cancel
+              <X size={12} className="sm:h-3.25 sm:w-3.25" /> Cancel
             </>
           ) : (
             <>
-              <Plus size={13} /> {addLabel}
+              <Plus size={12} className="sm:h-3.25 sm:w-3.25" /> {addLabel}
             </>
           )}
         </button>
       </div>
 
-      <div className="mt-5">{children}</div>
+      <div className="mt-4 sm:mt-5">{children}</div>
 
       {isAdding && (
-        <div className="border-t border-ink/10 pt-5 mt-5">{addForm}</div>
+        <div className="mt-4 border-t border-ink/10 pt-4 sm:mt-5 sm:pt-5">
+          {addForm}
+        </div>
       )}
     </section>
   );
@@ -69,9 +76,9 @@ export function SettingsEmptyState({
   label: string;
 }) {
   return (
-    <div className="flex items-center gap-2 py-4 text-sm text-ink/50">
-      <Icon size={15} className="text-ink/30" />
-      {label}
+    <div className="flex items-center gap-2 py-3 text-sm text-ink/50 sm:py-4">
+      <Icon size={14} className="shrink-0 text-ink/30 sm:h-3.75 sm:w-3.75" />
+      <span className="text-xs sm:text-sm">{label}</span>
     </div>
   );
 }
