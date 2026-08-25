@@ -4,11 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-html,
-body {
-  overflow-x: hidden;
-}
-
 @theme inline {
   --color-ink: #101719;
   --color-ink-soft: #1b2426;
