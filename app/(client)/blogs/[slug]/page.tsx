@@ -1,0 +1,113 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { getPublishedBlogBySlug } from "@/lib/data/blogs";
+import { SITE } from "@/lib/constants";
+
+interface BlogPostPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = await getPublishedBlogBySlug(slug);
+  if (!blog) return {};
+
+  const title = blog.metaTitle || blog.title;
+  const description = blog.metaDescription || blog.excerpt;
+  const url = `${SITE.siteUrl}/blogs/${blog.slug}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+      publishedTime: blog.publishedAt?.toISOString(),
+      images: [{ url: blog.coverImage }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [blog.coverImage],
+    },
+  };
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const blog = await getPublishedBlogBySlug(slug);
+  if (!blog) notFound();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: blog.title,
+    description: blog.excerpt,
+    image: blog.coverImage,
+    datePublished: blog.publishedAt?.toISOString(),
+    dateModified: blog.updatedAt.toISOString(),
+    author: { "@type": "Organization", name: SITE.name },
+    publisher: { "@type": "Organization", name: SITE.name },
+  };
+
+  return (
+    <main className="bg-paper px-5 py-16 text-ink lg:py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <article className="mx-auto max-w-3xl">
+        <p className="text-xs uppercase tracking-[.16em] text-bronze-dark">
+          {blog.publishedAt?.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+        </p>
+        <h1 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+          {blog.title}
+        </h1>
+
+        <div className="relative mt-8 aspect-video w-full overflow-hidden">
+          <Image
+            src={blog.coverImage}
+            alt={blog.title}
+            fill
+            sizes="(min-width: 768px) 768px, 100vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        <div className="prose prose-lg mt-10 max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {blog.content}
+          </ReactMarkdown>
+        </div>
+
+        {blog.tags.length > 0 && (
+          <div className="mt-10 flex flex-wrap gap-2 border-t border-ink/10 pt-6">
+            {blog.tags.map((tag) => (
+              <span
+                key={tag}
+                className="border border-ink/15 px-3 py-1 text-[10px] uppercase tracking-widest text-ink/60"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </article>
+    </main>
+  );
+}

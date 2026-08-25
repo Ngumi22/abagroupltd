@@ -7,6 +7,7 @@ export const statement = {
   inquiry: ["read", "update", "delete"],
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update", "delete"],
+  blog: ["create", "read", "update", "delete"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -17,6 +18,7 @@ export const admin = ac.newRole({
   inquiry: ["read", "update", "delete"],
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update", "delete"],
+  blog: ["create", "read", "update", "delete"],
 });
 
 export const staff = ac.newRole({
@@ -24,4 +26,5 @@ export const staff = ac.newRole({
   inquiry: ["read", "update"],
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update"],
+  blog: ["create", "read", "update"], // no delete — publishing mistakes get unpublished, not erased, by staff
 });

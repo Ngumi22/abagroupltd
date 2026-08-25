@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { projectSchema } from "@/lib/validations/project";
@@ -67,6 +67,8 @@ export async function createProject(
   }
 
   await prisma.project.create({ data: parsed.data });
+
+  revalidateTag("projects", "default");
 
   revalidatePath("/admin/projects");
   revalidatePath("/admin");

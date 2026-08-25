@@ -1,5 +1,7 @@
-import type { Project as PrismaProject } from "@/generated/prisma/client";
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import type { Project as PrismaProject } from "@/generated/prisma/client";
 import type { Project } from "@/lib/types";
 
 function mapProject(record: PrismaProject): Project {
@@ -21,25 +23,45 @@ function mapProject(record: PrismaProject): Project {
   };
 }
 
-export async function getProjects(): Promise<Project[]> {
-  const records = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-  return records.map(mapProject);
-}
+export const getProjects = cache(async (): Promise<Project[]> => {
+  return unstable_cache(
+    async () => {
+      const records = await prisma.project.findMany({
+        orderBy: { createdAt: "desc" },
+      });
+      return records.map(mapProject);
+    },
+    ["projects-list"],
+    { tags: ["projects"] },
+  )();
+});
 
-export async function getProjectBySlug(
-  slug: string,
-): Promise<Project | undefined> {
-  const record = await prisma.project.findUnique({ where: { slug } });
-  return record ? mapProject(record) : undefined;
-}
+export const getProjectBySlug = cache(
+  async (slug: string): Promise<Project | undefined> => {
+    return unstable_cache(
+      async () => {
+        const record = await prisma.project.findUnique({ where: { slug } });
+        return record ? mapProject(record) : undefined;
+      },
+      [`project-slug-${slug}`],
+      { tags: ["projects", `project-${slug}`] },
+    )();
+  },
+);
 
-export async function getProjectsInDelivery(limit = 3): Promise<Project[]> {
-  const records = await prisma.project.findMany({
-    where: { deliveryStatus: { not: null } },
-    orderBy: { updatedAt: "desc" },
-    take: limit,
-  });
-  return records.map(mapProject);
-}
+export const getProjectsInDelivery = cache(
+  async (limit = 3): Promise<Project[]> => {
+    return unstable_cache(
+      async () => {
+        const records = await prisma.project.findMany({
+          where: { deliveryStatus: { not: null } },
+          orderBy: { updatedAt: "desc" },
+          take: limit,
+        });
+        return records.map(mapProject);
+      },
+      [`projects-delivery-${limit}`],
+      { tags: ["projects"] },
+    )();
+  },
+);

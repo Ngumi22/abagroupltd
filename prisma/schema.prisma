@@ -190,3 +190,26 @@ enum LeadStatus {
   WON
   LOST
 }
+
+model Blog {
+  id              String     @id @default(cuid())
+  slug            String     @unique
+  title           String
+  excerpt         String
+  content         String
+  coverImage      String
+  tags            String[]
+  status          BlogStatus @default(DRAFT)
+  metaTitle       String?
+  metaDescription String?
+  publishedAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@map("blog")
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+}
