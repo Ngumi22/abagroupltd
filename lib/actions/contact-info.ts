@@ -22,8 +22,6 @@ function revalidateContactPages() {
   revalidatePath("/contact");
 }
 
-// ---- Branch ----
-
 export async function createBranch(
   _prev: ActionState,
   formData: FormData,
