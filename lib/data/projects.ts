@@ -18,6 +18,7 @@ function mapProject(record: PrismaProject): Project {
     gallery: record.gallery,
     scope: record.scope,
     progress: record.progress ?? undefined,
+    updatedAt: record.updatedAt,
     deliveryStatus:
       (record.deliveryStatus as Project["deliveryStatus"]) ?? undefined,
   };

@@ -23,6 +23,7 @@ export type Project = {
   // Admin-only delivery tracking. Optional: not every project has this yet.
   progress?: number; // 0–100
   deliveryStatus?: ProjectDeliveryStatus;
+  updatedAt: Date;
 };
 
 export type LeadStatus =
