@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Geist_Mono, Inter, Geist } from "next/font/google";
 import "./globals.css";
@@ -52,7 +51,7 @@ export default function RootLayout({
         className={`${inter.variable} ${cormorant.variable} ${mono.variable} antialiased`}
       >
         {children}
-        {process.env.NODE_ENV === "production" && <Analytics />}
+
         <Toaster />
       </body>
     </html>

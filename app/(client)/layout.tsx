@@ -3,6 +3,7 @@ import { Footer } from "@/components/site/site-shell";
 import Header from "@/components/site/header";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://abagroupltd.co.ke"),
@@ -29,6 +30,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
       <Header />
       <div>{children}</div>
       <Footer />
+      {process.env.NODE_ENV === "production" && <Analytics />}
     </div>
   );
 }
