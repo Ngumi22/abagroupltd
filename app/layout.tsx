@@ -1,7 +1,11 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Geist_Mono, Inter } from "next/font/google";
+import { Cormorant_Garamond, Geist_Mono, Inter, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cormorant = Cormorant_Garamond({
@@ -39,12 +43,13 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="bg-paper">
+    <html lang="en" className={cn("bg-paper", "font-sans", geist.variable)}>
       <body
         className={`${inter.variable} ${cormorant.variable} ${mono.variable} antialiased`}
       >
         {children}
         {process.env.NODE_ENV === "production" && <Analytics />}
+        <Toaster />
       </body>
     </html>
   );

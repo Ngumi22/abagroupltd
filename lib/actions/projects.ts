@@ -2,29 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { projectSchema } from "@/lib/validations/project";
+import { requirePermission } from "../auth/require-permission";
 
 export type CreateProjectState = {
   status: "idle" | "error";
   message?: string;
   fieldErrors?: Record<string, string>;
 };
-
-async function requireDashboardUser() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  const role = (session?.user as { role?: string } | undefined)?.role;
-
-  if (
-    !session ||
-    session.user.banned ||
-    (role !== "admin" && role !== "staff")
-  ) {
-    throw new Error("Unauthorized");
-  }
-}
 
 function linesToArray(value: FormDataEntryValue | null): string[] {
   return ((value as string) ?? "")
@@ -37,7 +23,7 @@ export async function createProject(
   _prevState: CreateProjectState,
   formData: FormData,
 ): Promise<CreateProjectState> {
-  await requireDashboardUser();
+  await requirePermission({ project: ["create"] });
 
   const parsed = projectSchema.safeParse({
     slug: formData.get("slug"),

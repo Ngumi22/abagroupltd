@@ -15,15 +15,22 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  const isDashboardUser =
-    session.user.role === "admin" || session.user.role === "staff";
+  const role = (session.user as { role?: string }).role;
+  const isDashboardUser = role === "admin" || role === "staff";
   if (!isDashboardUser) {
     redirect("/login");
   }
 
   const notificationCount = await getNewInquiryCount();
+  const firstName = session.user.name?.split(" ")[0];
 
   return (
-    <AdminShell notificationCount={notificationCount}>{children}</AdminShell>
+    <AdminShell
+      notificationCount={notificationCount}
+      role={role}
+      userName={firstName}
+    >
+      {children}
+    </AdminShell>
   );
 }

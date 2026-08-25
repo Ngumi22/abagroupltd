@@ -1,5 +1,24 @@
-import { LeadsPage } from "@/components/admin/pages/leads";
+import { LeadsManagementTable } from "@/components/admin/leads/leads-management-table";
 
-export default function Page() {
-  return <LeadsPage />;
+import { prisma } from "@/lib/prisma";
+import AdminPageFrame from "@/components/admin/pages/AdminPageFrame";
+import { AddLeadPopover } from "@/components/admin/leads/add-lead-popover";
+
+export default async function AdminLeadsPage() {
+  const leads = await prisma.lead.findMany({ orderBy: { createdAt: "desc" } });
+
+  return (
+    <AdminPageFrame
+      eyebrow="Pipeline"
+      title="Leads"
+      description="Track every prospect, from first contact through to a signed project."
+    >
+      <div className="grid gap-6">
+        <div className="flex justify-end">
+          <AddLeadPopover />
+        </div>
+        <LeadsManagementTable leads={leads} />
+      </div>
+    </AdminPageFrame>
+  );
 }

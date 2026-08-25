@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ProjectsGrid } from "@/components/site/project-components";
 import { SectionLabel } from "@/components/site/shared";
-import { projects } from "@/lib/data";
+import { getProjects } from "@/lib/data/index";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/projects" },
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
   return (
     <main className="bg-paper px-5 pb-20 pt-28 text-ink sm:pt-32 lg:px-10 lg:pb-28">
       <div className="absolute inset-x-0 top-0 h-40 bg-ink sm:h-48 -z-10" />

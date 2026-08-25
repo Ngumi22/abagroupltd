@@ -9,7 +9,7 @@ export function StatCard({ label, value, trend, icon: Icon }: DashboardStat) {
         </span>
         <Icon size={17} />
       </div>
-      <p className="mt-6 font-serif text-3xl">{value}</p>
+      <p className="mt-6 font-serif text-xl">{value}</p>
       <p className="mt-1 text-xs text-ink/50">{trend}</p>
     </div>
   );

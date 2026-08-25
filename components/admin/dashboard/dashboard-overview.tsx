@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Plus } from "lucide-react";
 import type { DashboardStat, Lead, Project } from "@/lib/types";
 import { StatsGrid } from "./stats-grid";
@@ -26,9 +27,12 @@ export function DashboardOverview({
             Your business at a glance.
           </h2>
         </div>
-        <button className="flex items-center gap-2 bg-ink px-4 py-3 text-[10px] uppercase tracking-widest text-paper">
+        <Link
+          href="/admin/projects/new"
+          className="flex items-center gap-2 bg-ink px-4 py-3 text-[10px] uppercase tracking-widest text-paper"
+        >
           <Plus size={15} /> Add project
-        </button>
+        </Link>
       </div>
 
       <StatsGrid stats={stats} />

@@ -22,7 +22,7 @@ export function ProjectsPage() {
               width={200}
               className="h-48 w-full object-cover"
             />
-            <div className="p-5">
+            <div className="p-3">
               <p className="text-xs uppercase tracking-[.12em] text-bronze-dark">
                 {project.type} · {project.status}
               </p>

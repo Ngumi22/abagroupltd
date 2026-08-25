@@ -1,12 +1,14 @@
-// components/admin/messages/inquiries-list.tsx
 "use client";
 
-import { useState, useTransition } from "react";
-import { Archive, Mail, MailOpen } from "lucide-react";
+import { Fragment, useState, useTransition } from "react";
+import { Archive, Mail, MailOpen, UserPlus } from "lucide-react";
 import { FilterTabs } from "@/components/admin/dashboard/filter-tabs";
 import { InquiryStatusBadge } from "./inquiry-status-badge";
+
 import { Inquiry, InquiryStatus } from "@/generated/prisma/client";
 import { updateInquiryStatus } from "@/lib/data/inquiries";
+import { formatDate } from "@/lib/utils";
+import { ConvertToLeadForm } from "../messages/convert-to-lead-form";
 
 const FILTERS = ["All", "New", "Read", "Archived"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -17,20 +19,11 @@ const FILTER_TO_STATUS: Record<Exclude<Filter, "All">, InquiryStatus> = {
   Archived: "ARCHIVED",
 };
 
-function formatDate(date: Date): string {
-  const d = new Date(date);
-  const includeYear = d.getFullYear() !== new Date().getFullYear();
-  return d.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    ...(includeYear && { year: "numeric" }),
-  });
-}
-
 export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
   const [filter, setFilter] = useState<Filter>("All");
   const [isPending, startTransition] = useTransition();
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [convertingId, setConvertingId] = useState<string | null>(null);
 
   const visible = inquiries.filter(
     (inquiry) =>
@@ -43,6 +36,10 @@ export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
       await updateInquiryStatus(id, status);
       setPendingId(null);
     });
+  }
+
+  function handleToggleConvert(id: string) {
+    setConvertingId((current) => (current === id ? null : id));
   }
 
   if (inquiries.length === 0) {
@@ -82,8 +79,15 @@ export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
                 inquiry={inquiry}
                 isPending={isPending && pendingId === inquiry.id}
                 onStatusChange={handleStatusChange}
+                onConvert={handleToggleConvert}
               />
             </div>
+            {convertingId === inquiry.id && (
+              <ConvertToLeadForm
+                inquiryId={inquiry.id}
+                onDone={() => setConvertingId(null)}
+              />
+            )}
           </li>
         ))}
       </ul>
@@ -106,28 +110,44 @@ export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
           </thead>
           <tbody>
             {visible.map((inquiry) => (
-              <tr key={inquiry.id} className="border-t border-ink/10 align-top">
-                <td className="px-5 py-4">
-                  <p className="font-medium">{inquiry.name}</p>
-                  <p className="text-xs text-ink/50">{inquiry.email}</p>
-                </td>
-                <td className="hidden max-w-80 px-5 py-4 text-ink/60 md:table-cell">
-                  <p className="line-clamp-2">{inquiry.message}</p>
-                </td>
-                <td className="px-5 py-4">
-                  <InquiryStatusBadge status={inquiry.status} />
-                </td>
-                <td className="hidden px-5 py-4 text-xs text-ink/50 lg:table-cell">
-                  {formatDate(inquiry.createdAt)}
-                </td>
-                <td className="px-5 py-4">
-                  <InquiryActions
-                    inquiry={inquiry}
-                    isPending={isPending && pendingId === inquiry.id}
-                    onStatusChange={handleStatusChange}
-                  />
-                </td>
-              </tr>
+              <Fragment key={inquiry.id}>
+                <tr className="border-t border-ink/10 align-top">
+                  <td className="px-5 py-4">
+                    <p className="font-medium">{inquiry.name}</p>
+                    <p className="text-xs text-ink/50">{inquiry.email}</p>
+                  </td>
+                  <td className="hidden max-w-80 px-5 py-4 text-ink/60 md:table-cell">
+                    <p className="line-clamp-2">{inquiry.message}</p>
+                  </td>
+                  <td className="px-5 py-4">
+                    <InquiryStatusBadge status={inquiry.status} />
+                  </td>
+                  <td className="hidden px-5 py-4 text-xs text-ink/50 lg:table-cell">
+                    {formatDate(inquiry.createdAt)}
+                  </td>
+                  <td className="px-5 py-4">
+                    <InquiryActions
+                      inquiry={inquiry}
+                      isPending={isPending && pendingId === inquiry.id}
+                      onStatusChange={handleStatusChange}
+                      onConvert={handleToggleConvert}
+                    />
+                  </td>
+                </tr>
+                {convertingId === inquiry.id && (
+                  <tr
+                    key={`${inquiry.id}-convert`}
+                    className="border-t border-ink/10 bg-[#eee9df]/40"
+                  >
+                    <td colSpan={5} className="px-5 py-4">
+                      <ConvertToLeadForm
+                        inquiryId={inquiry.id}
+                        onDone={() => setConvertingId(null)}
+                      />
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </tbody>
         </table>
@@ -146,39 +166,74 @@ function InquiryActions({
   inquiry,
   isPending,
   onStatusChange,
+  onConvert,
 }: {
   inquiry: Inquiry;
   isPending: boolean;
   onStatusChange: (id: string, status: InquiryStatus) => void;
+  onConvert: (id: string) => void;
 }) {
   return (
     <div className="flex items-center gap-3">
       {inquiry.status === "NEW" && (
-        <button
-          onClick={() => onStatusChange(inquiry.id, "READ")}
-          disabled={isPending}
-          className="text-ink/50 transition hover:text-ink disabled:opacity-40"
-          aria-label="Mark as read"
-        >
-          <MailOpen size={16} />
-        </button>
+        <div className="relative group flex items-center justify-center">
+          <button
+            onClick={() => onStatusChange(inquiry.id, "READ")}
+            disabled={isPending}
+            className="text-ink/50 transition hover:text-ink disabled:opacity-40"
+            aria-label="Mark as read"
+          >
+            <MailOpen size={16} />
+          </button>
+          <span className="pointer-events-none absolute bottom-full mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-ink px-2 py-1 text-[10px] font-medium text-white shadow-md group-hover:block z-20">
+            Mark as read
+          </span>
+        </div>
       )}
-      <a
-        href={`mailto:${inquiry.email}`}
-        className="text-ink/50 transition hover:text-ink"
-        aria-label="Reply by email"
-      >
-        <Mail size={16} />
-      </a>
-      {inquiry.status !== "ARCHIVED" && (
-        <button
-          onClick={() => onStatusChange(inquiry.id, "ARCHIVED")}
-          disabled={isPending}
-          className="text-ink/50 transition hover:text-ink disabled:opacity-40"
-          aria-label="Archive"
+
+      <div className="relative group flex items-center justify-center">
+        <a
+          href={`mailto:${inquiry.email}`}
+          className="text-ink/50 transition hover:text-ink"
+          aria-label="Reply by email"
         >
-          <Archive size={16} />
-        </button>
+          <Mail size={16} />
+        </a>
+        <span className="pointer-events-none absolute bottom-full mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-ink px-2 py-1 text-[10px] font-medium text-white shadow-md group-hover:block z-20">
+          Reply by email
+        </span>
+      </div>
+
+      {inquiry.status !== "ARCHIVED" && (
+        <div className="relative group flex items-center justify-center">
+          <button
+            onClick={() => onStatusChange(inquiry.id, "ARCHIVED")}
+            disabled={isPending}
+            className="text-ink/50 transition hover:text-ink disabled:opacity-40"
+            aria-label="Archive"
+          >
+            <Archive size={16} />
+          </button>
+          <span className="pointer-events-none absolute bottom-full mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-ink px-2 py-1 text-[10px] font-medium text-white shadow-md group-hover:block z-20">
+            Archive
+          </span>
+        </div>
+      )}
+
+      {inquiry.status !== "ARCHIVED" && (
+        <div className="relative group flex items-center justify-center">
+          <button
+            onClick={() => onConvert(inquiry.id)}
+            disabled={isPending}
+            className="text-ink/50 transition hover:text-ink disabled:opacity-40"
+            aria-label="Convert to lead"
+          >
+            <UserPlus size={16} />
+          </button>
+          <span className="pointer-events-none absolute bottom-full mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-ink px-2 py-1 text-[10px] font-medium text-white shadow-md group-hover:block z-20">
+            Convert to lead
+          </span>
+        </div>
       )}
     </div>
   );

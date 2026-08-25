@@ -1,3 +1,5 @@
+import { SocialPlatform } from "@/generated/prisma/browser";
+
 export const SITE = {
   name: "Aba Group Ltd",
   shortName: "ABA GROUP",
@@ -13,6 +15,7 @@ export const NAV_LINKS = [
   ["Home", "/"],
   ["About", "/about"],
   ["Services", "/services"],
+  ["Contact", "/contact"],
   ["Projects", "/projects"],
   ["Blogs", "/blogs"],
 ] as const;
@@ -21,3 +24,13 @@ export const ADMIN_CREDENTIALS = {
   email: "admin@abagroup.co.ke",
   password: "aba-demo-2025",
 } as const;
+
+export const PLATFORM_LABELS: Record<SocialPlatform, string> = {
+  FACEBOOK: "Facebook",
+  INSTAGRAM: "Instagram",
+  X: "X (Twitter)",
+  LINKEDIN: "LinkedIn",
+  TIKTOK: "TikTok",
+  YOUTUBE: "YouTube",
+  WHATSAPP: "WhatsApp",
+};

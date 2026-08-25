@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   MessageSquare,
   Settings,
+  Shield,
   Users,
 } from "lucide-react";
 
@@ -11,6 +12,7 @@ export interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
+  adminOnly?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -19,4 +21,5 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Projects", href: "/admin/projects", icon: FolderKanban },
   { label: "Messages", href: "/admin/messages", icon: MessageSquare },
   { label: "Settings", href: "/admin/settings", icon: Settings },
+  { label: "Users", href: "/admin/users", icon: Shield, adminOnly: true },
 ];

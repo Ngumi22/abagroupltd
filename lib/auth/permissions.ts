@@ -5,6 +5,8 @@ export const statement = {
   ...defaultStatements,
   project: ["create", "read", "update", "delete"],
   inquiry: ["read", "update", "delete"],
+  contactInfo: ["create", "read", "update", "delete"],
+  lead: ["create", "read", "update", "delete"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -13,9 +15,13 @@ export const admin = ac.newRole({
   ...adminAc.statements,
   project: ["create", "read", "update", "delete"],
   inquiry: ["read", "update", "delete"],
+  contactInfo: ["create", "read", "update", "delete"],
+  lead: ["create", "read", "update", "delete"],
 });
 
 export const staff = ac.newRole({
   project: ["create", "read", "update"],
   inquiry: ["read", "update"],
+  contactInfo: ["create", "read", "update", "delete"],
+  lead: ["create", "read", "update"],
 });

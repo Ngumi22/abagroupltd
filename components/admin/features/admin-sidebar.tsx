@@ -8,14 +8,18 @@ import { NAV_ITEMS } from "./nav-config";
 interface AdminSidebarProps {
   open: boolean;
   onClose: () => void;
+  role?: string | null;
 }
 
-export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
+export function AdminSidebar({ open, onClose, role }: AdminSidebarProps) {
   const pathname = usePathname();
+  const visibleItems = NAV_ITEMS.filter(
+    (item) => !item.adminOnly || role === "admin",
+  );
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-30 w-64 border-r border-ink/10 bg-ink p-6 text-paper transition-transform lg:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 z-30 w-64 border-r border-ink/10 bg-ink p-3 text-paper transition-transform lg:translate-x-0 ${
         open ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -38,7 +42,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         </button>
       </div>
       <nav className="mt-14 grid gap-2 text-sm">
-        {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
+        {visibleItems.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href;
           return (
             <Link

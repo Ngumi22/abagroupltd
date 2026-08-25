@@ -6,14 +6,23 @@ import { AdminHeader } from "./admin-header";
 
 interface AdminShellProps {
   children: React.ReactNode;
-  greeting?: string;
+  userName?: string | null;
   notificationCount?: number;
+  role?: string;
+}
+
+function getGreeting(name?: string | null) {
+  const hour = new Date().getHours();
+  const timeOfDay = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+
+  return name ? `Good ${timeOfDay}, ${name}.` : `Good ${timeOfDay}.`;
 }
 
 export function AdminShell({
   children,
-  greeting = "Good morning, Aba team.",
+  userName,
   notificationCount = 0,
+  role,
 }: AdminShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -26,15 +35,19 @@ export function AdminShell({
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      <AdminSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <AdminSidebar
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        role={role}
+      />
       <div className="lg:pl-64">
         <AdminHeader
           onMenuOpen={() => setMenuOpen(true)}
-          greeting={greeting}
+          greeting={getGreeting(userName)}
           dateLabel={dateLabel}
           notificationCount={notificationCount}
         />
-        <main className="mx-auto max-w-7xl p-5 lg:p-10">{children}</main>
+        <main className="mx-auto max-w-7xl p-2 lg:p-5">{children}</main>
       </div>
     </div>
   );

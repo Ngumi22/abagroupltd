@@ -34,6 +34,7 @@ export type LeadStatus =
   | "Lost";
 
 export type Lead = {
+  id?: string;
   name: string;
   project: string;
   status: LeadStatus;

@@ -9,12 +9,14 @@ export default async function UsersLayout({
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  const canManageUsers = await auth.api.userHasPermission({
-    body: {
-      userId: session?.user.id,
-      permissions: { user: ["create", "set-role", "ban"] },
-    },
-  });
+  const canManageUsers = session
+    ? await auth.api.userHasPermission({
+        body: {
+          userId: session.user.id,
+          permissions: { user: ["create", "set-role", "ban"] },
+        },
+      })
+    : { success: false };
 
   if (!canManageUsers.success) redirect("/admin");
 

@@ -40,7 +40,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
       <ul className="divide-y divide-ink/10 sm:hidden">
         {visibleLeads.map((lead) => (
           <li
-            key={`${lead.name}-${lead.date}`}
+            key={`${lead.id}-${lead.date}`}
             className="flex items-center justify-between gap-3 px-5 py-4"
           >
             <div className="min-w-0">
@@ -76,7 +76,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
           <tbody>
             {visibleLeads.map((lead) => (
               <tr
-                key={`${lead.name}-${lead.date}`}
+                key={`${lead.id}-${lead.date}`}
                 className="border-t border-ink/10"
               >
                 <td className="px-5 py-4 font-medium">{lead.name}</td>

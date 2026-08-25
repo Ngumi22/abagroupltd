@@ -12,7 +12,7 @@ function AdminPageFrame({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="min-h-[calc(100vh-5rem)] bg-paper p-5 text-ink lg:p-10">
+    <main className="min-h-[calc(100vh-5rem)] bg-paper p-2 text-ink lg:p-2">
       <p className="text-xs uppercase tracking-[.16em] text-bronze-dark">
         {eyebrow}
       </p>
@@ -20,7 +20,7 @@ function AdminPageFrame({
       <p className="mt-3 max-w-2xl text-sm leading-6 text-ink/55">
         {description}
       </p>
-      <div className="mt-8">{children}</div>
+      <div className="mt-4">{children}</div>
     </main>
   );
 }
@@ -32,7 +32,7 @@ export function LeadsPage() {
       title="Leads"
       description="Review, qualify, and follow up with new construction inquiries. This prototype uses local sample records."
     >
-      <div className="overflow-x-auto border border-ink/10 bg-[#eee9df] p-5">
+      <div className="overflow-x-auto border border-ink/10 bg-[#eee9df] p-3">
         <div className="min-w-155">
           {leads.map((lead) => (
             <div
