@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { createColumnHelper } from "@tanstack/react-table";
 import type { Lead as PrismaLead } from "@/generated/prisma/client";
 import { FilterTabs } from "@/components/admin/dashboard/filter-tabs";
 import { LeadStatusSelect } from "./lead-status-select";
 import { DeleteIconButton } from "@/components/admin/settings/delete-icon-button";
 import { deleteLead } from "@/lib/actions/leads";
-import { DataTable, DataTableColumn } from "../data-table/data-table";
+import { DataTable, type DataTableColumnMeta } from "../data-table/data-table";
+import type { DataTableFeatures } from "../data-table/data-table-features";
 
 const FILTERS = [
   "All",
@@ -27,36 +29,47 @@ const STATUS_TO_LABEL: Record<string, (typeof FILTERS)[number]> = {
   LOST: "Lost",
 };
 
-const columns: DataTableColumn<PrismaLead>[] = [
-  {
-    key: "name",
+const columnHelper = createColumnHelper<DataTableFeatures, PrismaLead>();
+
+const columns = columnHelper.columns([
+  columnHelper.accessor("name", {
     header: "Name",
-    primary: true,
-    searchValue: (lead) => lead.name,
-    accessor: (lead) => <span className="font-medium">{lead.name}</span>,
-  },
-  {
-    key: "project",
+    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+  }),
+  columnHelper.accessor("project", {
     header: "Project",
-    hideBelow: "lg",
-    searchValue: (lead) => lead.project,
-    accessor: (lead) => <span className="text-ink/60">{lead.project}</span>,
-  },
-  {
-    key: "value",
-    header: "Est. value",
-    hideBelow: "xl",
-    accessor: (lead) =>
-      lead.value ? `KES ${lead.value.toLocaleString()}` : "—",
-  },
-  {
-    key: "status",
-    header: "Status",
-    accessor: (lead) => (
-      <LeadStatusSelect leadId={lead.id} status={lead.status} />
+    cell: ({ row }) => (
+      <span className="text-ink/60">{row.original.project}</span>
     ),
-  },
-];
+  }),
+  columnHelper.accessor("value", {
+    header: "Est. value",
+    cell: ({ row }) =>
+      row.original.value ? `KES ${row.original.value.toLocaleString()}` : "—",
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: ({ row }) => (
+      <LeadStatusSelect leadId={row.original.id} status={row.original.status} />
+    ),
+  }),
+  columnHelper.display({
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <DeleteIconButton
+        onDelete={() => deleteLead(row.original.id)}
+        confirmMessage={`Delete "${row.original.name}"?`}
+      />
+    ),
+  }),
+]);
+
+const columnMeta: Record<string, DataTableColumnMeta> = {
+  name: { primary: true },
+  project: { hideBelow: "lg" },
+  value: { hideBelow: "xl" },
+};
 
 export function LeadsManagementTable({ leads }: { leads: PrismaLead[] }) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
@@ -68,17 +81,12 @@ export function LeadsManagementTable({ leads }: { leads: PrismaLead[] }) {
     <DataTable
       data={filtered}
       columns={columns}
-      keyExtractor={(lead) => lead.id}
+      columnMeta={columnMeta}
+      getSearchText={(lead) => `${lead.name} ${lead.project}`}
       searchPlaceholder="Search leads by name or project…"
       filters={
         <FilterTabs options={FILTERS} value={filter} onChange={setFilter} />
       }
-      renderRowActions={(lead) => (
-        <DeleteIconButton
-          onDelete={() => deleteLead(lead.id)}
-          confirmMessage={`Delete "${lead.name}"?`}
-        />
-      )}
       emptyMessage="No leads match this filter."
     />
   );

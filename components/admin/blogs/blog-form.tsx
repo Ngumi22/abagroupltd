@@ -1,11 +1,15 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import dynamic from "next/dynamic";
 import remarkGfm from "remark-gfm";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import type { Blog } from "@/generated/prisma/client";
 import type { BlogActionState } from "@/lib/actions/blog";
+import "@uiw/react-md-editor/markdown-editor.css";
+import { ImageUploader } from "../upload/image-uploader";
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 const initialState: BlogActionState = { status: "idle" };
 const inputClass =
@@ -37,7 +41,7 @@ export function BlogForm({ action, blog }: BlogFormProps) {
   const [metaDescription, setMetaDescription] = useState(
     blog?.metaDescription ?? "",
   );
-  const [showPreview, setShowPreview] = useState(false);
+  const [coverImage, setCoverImage] = useState(blog?.coverImage ?? "");
 
   const errors = state.fieldErrors ?? {};
 
@@ -74,15 +78,18 @@ export function BlogForm({ action, blog }: BlogFormProps) {
           />
         </Field>
 
-        <Field label="Cover image URL" error={errors.coverImage}>
-          <input
-            required
-            name="coverImage"
-            type="url"
-            defaultValue={blog?.coverImage}
-            className={inputClass}
-            placeholder="https://…"
+        <Field
+          label="Cover image"
+          error={errors.coverImage}
+          className="sm:col-span-2"
+        >
+          <ImageUploader
+            value={coverImage}
+            onChange={setCoverImage}
+            folder="/blog/covers"
+            label="cover image"
           />
+          <input type="hidden" name="coverImage" value={coverImage} />
         </Field>
 
         <Field label="Excerpt" error={errors.excerpt} className="sm:col-span-2">
@@ -111,37 +118,24 @@ export function BlogForm({ action, blog }: BlogFormProps) {
       </div>
 
       <div className="border border-ink/20 bg-white/40 p-6">
-        <div className="flex items-center justify-between">
-          <p className="text-[10px] uppercase tracking-widest">
-            Content{" "}
-            <span className="text-ink/40">
-              — markdown, supports tables & images
-            </span>
-          </p>
-          <button
-            type="button"
-            onClick={() => setShowPreview((p) => !p)}
-            className="text-[10px] uppercase tracking-widest text-bronze-dark"
-          >
-            {showPreview ? "Edit" : "Preview"}
-          </button>
-        </div>
+        <p className="text-[10px] uppercase tracking-widest">
+          Content{" "}
+          <span className="text-ink/40">
+            — use the toolbar to insert tables and images
+          </span>
+        </p>
 
-        {showPreview ? (
-          <article className="prose prose-sm mt-3 max-w-none border border-ink/10 p-4">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-          </article>
-        ) : (
-          <textarea
-            required
-            name="content"
-            rows={16}
+        <div className="mt-3" data-color-mode="light">
+          <MDEditor
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="mt-3 w-full resize-y border border-ink/15 bg-transparent p-4 font-mono text-sm outline-none"
-            placeholder={`## A section heading\n\nRegular paragraph text.\n\n![Site photo](https://…)\n\n| Material | Lifespan |\n| --- | --- |\n| Stone | 100+ years |\n| Timber | 30–50 years |`}
+            onChange={(value) => setContent(value ?? "")}
+            height={420}
+            preview="live"
+            previewOptions={{ remarkPlugins: [remarkGfm] }}
           />
-        )}
+        </div>
+        <input type="hidden" name="content" value={content} />
+
         {errors.content && (
           <p className="mt-1 text-[11px] text-red-700">{errors.content}</p>
         )}

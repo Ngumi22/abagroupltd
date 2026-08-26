@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import type { DashboardStat, Lead, Project } from "@/lib/types";
 import { StatsGrid } from "./stats-grid";
-import { LeadsTable } from "./leads-table";
+import { LeadsTable } from "../leads/leads-table";
 import { ProjectPulse } from "./project-pulse";
 
 interface DashboardOverviewProps {

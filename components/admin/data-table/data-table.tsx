@@ -1,20 +1,32 @@
+// components/data-table/data-table.tsx
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  useTable,
+  type ColumnDef,
+  type PaginationState,
+  type RowData,
+  type SortingState,
+} from "@tanstack/react-table";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { features, type DataTableFeatures } from "./data-table-features";
 
-export interface DataTableColumn<T> {
-  key: string;
-  header: string;
-  accessor: (row: T) => React.ReactNode;
-  searchValue?: (row: T) => string;
+export interface DataTableColumnMeta {
   hideBelow?: "sm" | "md" | "lg" | "xl";
   primary?: boolean;
-  align?: "left" | "right";
 }
 
 const HIDE_BELOW_CLASS: Record<
-  NonNullable<DataTableColumn<unknown>["hideBelow"]>,
+  NonNullable<DataTableColumnMeta["hideBelow"]>,
   string
 > = {
   sm: "hidden sm:table-cell",
@@ -23,61 +35,65 @@ const HIDE_BELOW_CLASS: Record<
   xl: "hidden xl:table-cell",
 };
 
-interface DataTableProps<T> {
-  data: T[];
-  columns: DataTableColumn<T>[];
-  keyExtractor: (row: T) => string;
+interface DataTableProps<TData extends RowData> {
+  columns: ColumnDef<DataTableFeatures, TData>[];
+  data: TData[];
+  columnMeta?: Record<string, DataTableColumnMeta>;
+  getSearchText?: (row: TData) => string;
   searchPlaceholder?: string;
-  renderRowActions?: (row: T) => React.ReactNode;
   filters?: React.ReactNode;
-  emptyMessage?: string;
+  headerActions?: React.ReactNode;
   title?: string;
   description?: string;
-  headerActions?: React.ReactNode;
-  renderExpandedContent?: (row: T) => React.ReactNode;
-  isRowExpanded?: (row: T) => boolean;
+  emptyMessage?: string;
+  pageSize?: number;
 }
 
-export function DataTable<T>({
-  data,
+export function DataTable<TData extends RowData>({
   columns,
-  keyExtractor,
+  data,
+  columnMeta = {},
+  getSearchText,
   searchPlaceholder = "Search…",
-  renderRowActions,
   filters,
-  emptyMessage = "No results found.",
+  headerActions,
   title,
   description,
-  headerActions,
-  renderExpandedContent,
-  isRowExpanded,
-}: DataTableProps<T>) {
+  emptyMessage = "No results found.",
+  pageSize = 10,
+}: DataTableProps<TData>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize,
+  });
   const [query, setQuery] = useState("");
 
-  const searchableColumns = useMemo(
-    () => columns.filter((c) => c.searchValue),
-    [columns],
-  );
-
-  const visible = useMemo(() => {
-    if (!query.trim() || searchableColumns.length === 0) return data;
+  const searchedData = useMemo(() => {
+    if (!getSearchText || !query.trim()) return data;
     const q = query.trim().toLowerCase();
-    return data.filter((row) =>
-      searchableColumns.some((col) =>
-        col.searchValue!(row).toLowerCase().includes(q),
-      ),
-    );
-  }, [data, query, searchableColumns]);
+    return data.filter((row) => getSearchText(row).toLowerCase().includes(q));
+  }, [data, query, getSearchText]);
 
-  const primaryColumns = columns.filter((c) => c.primary);
-  const secondaryColumns = columns.filter((c) => !c.primary);
-  const colSpan = columns.length + (renderRowActions ? 1 : 0);
+  const table = useTable({
+    features,
+    data: searchedData,
+    columns,
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    state: { sorting, pagination },
+  });
+
+  const rows = table.getRowModel().rows;
+  const primaryIds = Object.entries(columnMeta)
+    .filter(([, m]) => m.primary)
+    .map(([id]) => id);
 
   return (
     <section className="w-full border border-ink/10 bg-white/40">
       {(title || headerActions) && (
         <div className="flex flex-col items-start gap-3 border-b border-ink/10 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 md:p-6">
-          <div className="min-w-0 w-full sm:w-auto">
+          <div className="w-full min-w-0 sm:w-auto">
             {title && (
               <h3 className="truncate font-serif text-xl sm:text-2xl md:text-3xl">
                 {title}
@@ -95,7 +111,7 @@ export function DataTable<T>({
 
       <div className="flex flex-col gap-3 border-b border-ink/10 p-4 sm:p-5">
         {filters}
-        {searchableColumns.length > 0 && (
+        {getSearchText && (
           <div className="flex items-center gap-2 border border-ink/15 bg-white/60 px-3 py-2">
             <Search size={14} className="shrink-0 text-ink/40" />
             <input
@@ -110,43 +126,45 @@ export function DataTable<T>({
       </div>
 
       <ul className="divide-y divide-ink/10 md:hidden">
-        {visible.map((row) => {
-          const expanded = isRowExpanded?.(row) ?? false;
+        {rows.map((row) => {
+          const allCells = row.getAllCells();
+          const actionsCell = allCells.find((c) => c.column.id === "actions");
+          const primaryCells = allCells.filter((c) =>
+            primaryIds.includes(c.column.id),
+          );
+          const secondaryCells = allCells.filter(
+            (c) =>
+              c.column.id !== "actions" && !primaryIds.includes(c.column.id),
+          );
           return (
-            <li
-              key={keyExtractor(row)}
-              className="flex flex-col gap-2 px-4 py-4"
-            >
+            <li key={row.id} className="flex flex-col gap-2 px-4 py-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1 space-y-0.5">
-                  {primaryColumns.map((col) => (
-                    <div key={col.key} className="truncate text-sm">
-                      {col.accessor(row)}
+                  {primaryCells.map((cell) => (
+                    <div key={cell.id} className="truncate text-sm">
+                      <table.FlexRender cell={cell} />
                     </div>
                   ))}
                 </div>
-                {renderRowActions && (
-                  <div className="shrink-0">{renderRowActions(row)}</div>
+                {actionsCell && (
+                  <div className="shrink-0">
+                    <table.FlexRender cell={actionsCell} />
+                  </div>
                 )}
               </div>
-              {secondaryColumns.length > 0 && (
+              {secondaryCells.length > 0 && (
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink/60">
-                  {secondaryColumns.map((col) => (
-                    <div key={col.key} className="min-w-0 max-w-full">
-                      {col.accessor(row)}
+                  {secondaryCells.map((cell) => (
+                    <div key={cell.id} className="min-w-0 max-w-full">
+                      <table.FlexRender cell={cell} />
                     </div>
                   ))}
-                </div>
-              )}
-              {expanded && renderExpandedContent && (
-                <div className="mt-1 border-t border-ink/10 pt-3">
-                  {renderExpandedContent(row)}
                 </div>
               )}
             </li>
           );
         })}
-        {visible.length === 0 && (
+        {rows.length === 0 && (
           <p className="px-4 py-8 text-center text-sm text-ink/50">
             {emptyMessage}
           </p>
@@ -154,67 +172,84 @@ export function DataTable<T>({
       </ul>
 
       <div className="hidden overflow-x-auto md:block">
-        <table className="w-full min-w-150 text-left text-sm">
-          <thead className="text-[9px] uppercase tracking-widest text-ink/40 sm:text-[10px]">
-            <tr>
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  className={`px-4 py-3 font-normal sm:px-5 sm:py-4 ${
-                    col.hideBelow ? HIDE_BELOW_CLASS[col.hideBelow] : ""
-                  } ${col.align === "right" ? "text-right" : ""}`}
-                >
-                  {col.header}
-                </th>
-              ))}
-              {renderRowActions && <th className="px-4 py-3 sm:px-5 sm:py-4" />}
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map((row) => {
-              const expanded = isRowExpanded?.(row) ?? false;
-              return (
-                <Fragment key={keyExtractor(row)}>
-                  <tr
-                    key={keyExtractor(row)}
-                    className="border-t border-ink/10 align-top"
-                  >
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className={`px-4 py-3 sm:px-5 sm:py-4 ${
-                          col.hideBelow ? HIDE_BELOW_CLASS[col.hideBelow] : ""
-                        } ${col.align === "right" ? "text-right" : ""}`}
-                      >
-                        {col.accessor(row)}
-                      </td>
-                    ))}
-                    {renderRowActions && (
-                      <td className="px-4 py-3 sm:px-5 sm:py-4">
-                        {renderRowActions(row)}
-                      </td>
-                    )}
-                  </tr>
-                  {expanded && renderExpandedContent && (
-                    <tr
-                      key={`${keyExtractor(row)}-expanded`}
-                      className="border-t border-ink/10 bg-[#eee9df]/40"
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const meta = columnMeta[header.column.id];
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={
+                        meta?.hideBelow ? HIDE_BELOW_CLASS[meta.hideBelow] : ""
+                      }
                     >
-                      <td colSpan={colSpan} className="px-4 py-4 sm:px-5">
-                        {renderExpandedContent(row)}
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-        {visible.length === 0 && (
-          <p className="px-5 py-8 text-center text-sm text-ink/50">
-            {emptyMessage}
-          </p>
-        )}
+                      {header.isPlaceholder ? null : (
+                        <table.FlexRender header={header} />
+                      )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {rows.length ? (
+              rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getAllCells().map((cell) => {
+                    const meta = columnMeta[cell.column.id];
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={
+                          meta?.hideBelow
+                            ? HIDE_BELOW_CLASS[meta.hideBelow]
+                            : ""
+                        }
+                      >
+                        <table.FlexRender cell={cell} />
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-sm text-ink/50"
+                >
+                  {emptyMessage}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 border-t border-ink/10 p-4 sm:p-5">
+        <p className="text-xs text-ink/50">
+          Page {pagination.pageIndex + 1} of {table.getPageCount() || 1} ·{" "}
+          {rows.length} results
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="flex items-center gap-1 border border-ink/20 px-3 py-1.5 text-xs transition hover:bg-ink/5 disabled:opacity-40"
+          >
+            <ChevronLeft size={14} /> Prev
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="flex items-center gap-1 border border-ink/20 px-3 py-1.5 text-xs transition hover:bg-ink/5 disabled:opacity-40"
+          >
+            Next <ChevronRight size={14} />
+          </button>
+        </div>
       </div>
     </section>
   );

@@ -6,6 +6,7 @@ import type { Project } from "@/lib/types";
 
 function mapProject(record: PrismaProject): Project {
   return {
+    id: record.id,
     slug: record.slug,
     name: record.name,
     type: record.type,
@@ -18,9 +19,10 @@ function mapProject(record: PrismaProject): Project {
     gallery: record.gallery,
     scope: record.scope,
     progress: record.progress ?? undefined,
-    updatedAt: record.updatedAt,
     deliveryStatus:
       (record.deliveryStatus as Project["deliveryStatus"]) ?? undefined,
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
   };
 }
 

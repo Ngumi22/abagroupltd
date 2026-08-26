@@ -1,5 +1,5 @@
 import AdminPageFrame from "@/components/admin/pages/AdminPageFrame";
-import { NewProjectForm } from "@/components/admin/pages/new-project-form";
+import { ProjectForm } from "@/components/admin/pages/new-project-form";
 
 export default function NewProjectPage() {
   return (
@@ -8,7 +8,7 @@ export default function NewProjectPage() {
       title="Add project"
       description="Add a new project to the portfolio and delivery tracker."
     >
-      <NewProjectForm />
+      <ProjectForm />
     </AdminPageFrame>
   );
 }
