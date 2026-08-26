@@ -12,7 +12,7 @@ export default function AdminPageFrame({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="min-h-[calc(100vh-5rem)] bg-paper px-2 md:px-5 text-ink">
+    <main className="min-h-[calc(100vh-5rem)] w-full overflow-x-hidden bg-paper px-2 md:px-5 text-ink">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[.16em] text-bronze-dark">

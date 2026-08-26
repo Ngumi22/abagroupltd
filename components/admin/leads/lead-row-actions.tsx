@@ -1,4 +1,3 @@
-// components/admin/leads/lead-row-actions.tsx
 "use client";
 
 import { useState, useTransition } from "react";
@@ -41,7 +40,7 @@ export function LeadRowActions({ lead }: { lead: Lead }) {
       <DropdownMenuTrigger
         disabled={isPending}
         aria-label="Lead actions"
-        className="text-ink/50 transition hover:text-ink disabled:opacity-40"
+        className="shrink-0 text-ink/50 transition hover:text-ink disabled:opacity-40"
       >
         <MoreHorizontal size={17} />
       </DropdownMenuTrigger>

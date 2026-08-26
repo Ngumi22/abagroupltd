@@ -31,7 +31,7 @@ export function LeadStatusSelect({
           updateLeadStatus(leadId, e.target.value as LeadStatus),
         )
       }
-      className="border-b border-ink/20 bg-transparent py-1 text-xs outline-none disabled:opacity-50"
+      className="w-full min-w-0 max-w-27.5 truncate overflow-hidden whitespace-nowrap border-b border-ink/20 bg-transparent py-1 text-xs outline-none disabled:opacity-50 sm:max-w-none"
     >
       {Object.entries(STATUS_LABELS).map(([value, label]) => (
         <option key={value} value={value}>

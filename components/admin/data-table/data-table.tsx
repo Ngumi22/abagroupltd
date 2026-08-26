@@ -1,4 +1,3 @@
-// components/data-table/data-table.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -90,17 +89,17 @@ export function DataTable<TData extends RowData>({
     .map(([id]) => id);
 
   return (
-    <section className="w-full border border-ink/10 bg-white/40">
+    <section className="w-full min-w-0 max-w-full overflow-hidden border border-ink/10 bg-white/40">
       {(title || headerActions) && (
-        <div className="flex flex-col items-start gap-3 border-b border-ink/10 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 md:p-6">
-          <div className="w-full min-w-0 sm:w-auto">
+        <div className="flex w-full min-w-0 flex-col items-start gap-2 border-b border-ink/10 px-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0 flex-1">
             {title && (
               <h3 className="truncate font-serif text-xl sm:text-2xl md:text-3xl">
                 {title}
               </h3>
             )}
             {description && (
-              <p className="mt-0.5 text-[10px] text-ink/50 sm:mt-1 sm:text-xs">
+              <p className="mt-0.5 truncate text-[10px] text-ink/50 sm:mt-1 sm:text-xs">
                 {description}
               </p>
             )}
@@ -109,23 +108,23 @@ export function DataTable<TData extends RowData>({
         </div>
       )}
 
-      <div className="flex flex-col gap-3 border-b border-ink/10 p-4 sm:p-5">
+      <div className="flex w-full min-w-0 flex-col gap-2 border-b border-ink/10 px-1.5 py-2">
         {filters}
         {getSearchText && (
-          <div className="flex items-center gap-2 border border-ink/15 bg-white/60 px-3 py-2">
-            <Search size={14} className="shrink-0 text-ink/40" />
+          <div className="flex w-full min-w-0 items-center gap-2 border border-ink/15 bg-white/60 px-2">
+            <Search size={12} className="shrink-0 text-ink/40" />
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-ink/40"
+              className="w-full min-w-0 bg-transparent py-1.5 text-xs outline-none placeholder:text-ink/40"
             />
           </div>
         )}
       </div>
 
-      <ul className="divide-y divide-ink/10 md:hidden">
+      <ul className="w-full min-w-0 divide-y divide-ink/10 md:hidden">
         {rows.map((row) => {
           const allCells = row.getAllCells();
           const actionsCell = allCells.find((c) => c.column.id === "actions");
@@ -137,11 +136,14 @@ export function DataTable<TData extends RowData>({
               c.column.id !== "actions" && !primaryIds.includes(c.column.id),
           );
           return (
-            <li key={row.id} className="flex flex-col gap-2 px-4 py-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1 space-y-0.5">
+            <li
+              key={row.id}
+              className="flex w-full min-w-0 flex-col gap-1.5 px-2 py-3"
+            >
+              <div className="flex w-full min-w-0 items-start justify-between gap-2">
+                <div className="min-w-0 flex-1 space-y-0.5 overflow-hidden">
                   {primaryCells.map((cell) => (
-                    <div key={cell.id} className="truncate text-sm">
+                    <div key={cell.id} className="min-w-0 truncate text-sm">
                       <table.FlexRender cell={cell} />
                     </div>
                   ))}
@@ -153,9 +155,12 @@ export function DataTable<TData extends RowData>({
                 )}
               </div>
               {secondaryCells.length > 0 && (
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink/60">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-ink/60">
                   {secondaryCells.map((cell) => (
-                    <div key={cell.id} className="min-w-0 max-w-full">
+                    <div
+                      key={cell.id}
+                      className="min-w-0 max-w-full overflow-hidden"
+                    >
                       <table.FlexRender cell={cell} />
                     </div>
                   ))}
@@ -165,13 +170,13 @@ export function DataTable<TData extends RowData>({
           );
         })}
         {rows.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-ink/50">
+          <p className="px-2 py-8 text-center text-sm text-ink/50">
             {emptyMessage}
           </p>
         )}
       </ul>
 
-      <div className="hidden overflow-x-auto md:block">
+      <div className="hidden w-full min-w-0 overflow-x-auto md:block">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -219,7 +224,7 @@ export function DataTable<TData extends RowData>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-sm text-ink/50"
+                  className="h-24 text-center text-xs text-ink/50"
                 >
                   {emptyMessage}
                 </TableCell>
@@ -229,23 +234,23 @@ export function DataTable<TData extends RowData>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between gap-3 border-t border-ink/10 p-4 sm:p-5">
-        <p className="text-xs text-ink/50">
+      <div className="flex w-full min-w-0 items-center justify-between gap-3 border-t border-ink/10 px-2 py-3">
+        <p className="truncate text-xs text-ink/50">
           Page {pagination.pageIndex + 1} of {table.getPageCount() || 1} ·{" "}
           {rows.length} results
         </p>
-        <div className="flex gap-2">
+        <div className="flex shrink-0 gap-2">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="flex items-center gap-1 border border-ink/20 px-3 py-1.5 text-xs transition hover:bg-ink/5 disabled:opacity-40"
+            className="flex items-center gap-1 border border-ink/20 px-2 py-1 text-xs transition hover:bg-ink/5 disabled:opacity-40"
           >
             <ChevronLeft size={14} /> Prev
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="flex items-center gap-1 border border-ink/20 px-3 py-1.5 text-xs transition hover:bg-ink/5 disabled:opacity-40"
+            className="flex items-center gap-1 border border-ink/20 px-2 py-1 text-xs transition hover:bg-ink/5 disabled:opacity-40"
           >
             Next <ChevronRight size={14} />
           </button>
