@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getPublishedBlogBySlug } from "@/lib/data/blogs";
 import { SITE } from "@/lib/constants";
+import { formatDate } from "@/lib/utils";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -28,7 +29,9 @@ export async function generateMetadata({
       description,
       url,
       type: "article",
-      publishedTime: blog.publishedAt?.toISOString(),
+      publishedTime: blog.publishedAt
+        ? formatDate(blog.publishedAt)
+        : undefined,
       images: [{ url: blog.coverImage }],
     },
     twitter: {
@@ -51,14 +54,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     headline: blog.title,
     description: blog.excerpt,
     image: blog.coverImage,
-    datePublished: blog.publishedAt?.toISOString(),
-    dateModified: blog.updatedAt.toISOString(),
+    datePublished: blog.publishedAt ? formatDate(blog.publishedAt) : undefined,
+    dateModified: formatDate(blog.updatedAt),
     author: { "@type": "Organization", name: SITE.name },
     publisher: { "@type": "Organization", name: SITE.name },
   };
 
   return (
-    <main className="bg-paper px-5 py-16 text-ink lg:py-24">
+    <main className="bg-paper px-5 pb-20 pt-28 text-ink sm:pt-32 lg:px-10 lg:pb-28">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -66,11 +69,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <article className="mx-auto max-w-3xl">
         <p className="text-xs uppercase tracking-[.16em] text-bronze-dark">
-          {blog.publishedAt?.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
+          {blog.publishedAt ? formatDate(blog.publishedAt) : ""}
         </p>
         <h1 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
           {blog.title}

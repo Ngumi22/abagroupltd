@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPublishedBlogs } from "@/lib/data/blogs";
 import { SITE } from "@/lib/constants";
+import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Blogs | Aba Group Ltd",
@@ -14,7 +15,7 @@ export default async function BlogsPage() {
   const blogs = await getPublishedBlogs();
 
   return (
-    <main className="bg-paper px-5 py-16 text-ink lg:py-24">
+    <main className="bg-ink px-5 pb-20 pt-28 text-paper sm:pt-32 lg:px-10 lg:pb-28">
       <div className="mx-auto max-w-6xl">
         <p className="text-xs uppercase tracking-[.16em] text-bronze-dark">
           Insights
@@ -40,11 +41,7 @@ export default async function BlogsPage() {
                 />
               </div>
               <p className="mt-4 text-[10px] uppercase tracking-widest text-bronze-dark">
-                {blog.publishedAt?.toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
+                {blog.publishedAt ? formatDate(blog.publishedAt) : ""}
               </p>
               <h2 className="mt-2 font-serif text-2xl leading-tight">
                 {blog.title}
