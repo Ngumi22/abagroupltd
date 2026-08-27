@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { getPublishedBlogBySlug } from "@/lib/data/blogs";
 import { SITE } from "@/lib/constants";
 
@@ -89,11 +87,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           />
         </div>
 
-        <div className="prose prose-lg mt-10 max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {blog.content}
-          </ReactMarkdown>
-        </div>
+        <div
+          className="tiptap prose prose-lg mt-10 max-w-none"
+          dangerouslySetInnerHTML={{ __html: blog.content }}
+        />
 
         {blog.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2 border-t border-ink/10 pt-6">

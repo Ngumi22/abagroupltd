@@ -47,7 +47,7 @@ export async function createBlog(
   _prev: BlogActionState,
   formData: FormData,
 ): Promise<BlogActionState> {
-  await requirePermission({ blog: ["create"] });
+  const session = await requirePermission({ blog: ["create"] });
 
   const status = formData.get("intent") === "publish" ? "PUBLISHED" : "DRAFT";
   const parsed = parseBlogForm(formData, status);
@@ -73,6 +73,7 @@ export async function createBlog(
   await prisma.blog.create({
     data: {
       ...parsed.data,
+      authorId: session.user.id,
       publishedAt: status === "PUBLISHED" ? new Date() : null,
     },
   });

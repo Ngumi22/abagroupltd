@@ -1,6 +1,8 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Ban, ShieldCheck, UserCheck } from "lucide-react";
 import {
   setDashboardUserRole,
@@ -8,7 +10,8 @@ import {
   unbanDashboardUser,
 } from "@/lib/actions/users";
 import { UserRoleBadge } from "./user-role-badge";
-import { DataTable, DataTableColumn } from "../data-table/data-table";
+import { DataTable } from "../data-table/data-table";
+import type { DataTableFeatures } from "../data-table/data-table-features";
 
 interface DashboardUser {
   id: string;
@@ -32,45 +35,44 @@ export function UsersTable({
       try {
         await action();
       } catch (error) {
-        alert(error instanceof Error ? error.message : "Something went wrong.");
+        toast.error(
+          error instanceof Error ? error.message : "Something went wrong.",
+        );
       }
     });
   }
 
-  const columns: DataTableColumn<DashboardUser>[] = [
+  const columns: ColumnDef<DataTableFeatures, DashboardUser>[] = [
     {
-      key: "user",
+      id: "user",
       header: "User",
-      primary: true,
-      searchValue: (u) => `${u.name} ${u.email}`,
-      accessor: (u) => (
+      cell: ({ row }) => (
         <div>
           <p className="font-medium">
-            {u.name}{" "}
-            {u.id === currentUserId && (
+            {row.original.name}{" "}
+            {row.original.id === currentUserId && (
               <span className="text-xs text-ink/40">(you)</span>
             )}
           </p>
-          <p className="text-xs text-ink/50">{u.email}</p>
+          <p className="text-xs text-ink/50">{row.original.email}</p>
         </div>
       ),
     },
     {
-      key: "role",
+      id: "role",
       header: "Role",
-      accessor: (u) => <UserRoleBadge role={u.role} banned={u.banned} />,
+      cell: ({ row }) => (
+        <UserRoleBadge role={row.original.role} banned={row.original.banned} />
+      ),
     },
-  ];
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const user = row.original;
+        if (user.id === currentUserId) return null;
 
-  return (
-    <DataTable
-      data={users}
-      columns={columns}
-      keyExtractor={(u) => u.id}
-      searchPlaceholder="Search by name or email…"
-      emptyMessage="No dashboard users yet."
-      renderRowActions={(user) =>
-        user.id === currentUserId ? null : (
+        return (
           <div className="flex items-center gap-3">
             <button
               disabled={isPending}
@@ -108,8 +110,19 @@ export function UsersTable({
               <Ban size={16} />
             </button>
           </div>
-        )
-      }
+        );
+      },
+    },
+  ];
+
+  return (
+    <DataTable
+      data={users}
+      columns={columns}
+      columnMeta={{ user: { primary: true } }}
+      getSearchText={(u) => `${u.name} ${u.email}`}
+      searchPlaceholder="Search by name or email…"
+      emptyMessage="No dashboard users yet."
     />
   );
 }

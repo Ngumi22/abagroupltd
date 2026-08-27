@@ -9,8 +9,10 @@ import {
   getSocialLinks,
 } from "@/lib/data/contact-info";
 import AdminPageFrame from "@/components/admin/pages/AdminPageFrame";
+import { requirePageAccess } from "@/lib/auth/require-page-access";
 
 export default async function AdminSettingsPage() {
+  await requirePageAccess({ contactInfo: ["read"] });
   const [branches, phones, emails, socialLinks] = await Promise.all([
     getBranches(),
     getContactPhones(),

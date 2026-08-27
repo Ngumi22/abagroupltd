@@ -5,8 +5,10 @@ import { getProjects } from "@/lib/data/projects";
 import AdminPageFrame from "@/components/admin/pages/AdminPageFrame";
 import { ProjectDropdown } from "@/components/admin/projects/ProjectDropdown";
 import { StatusBadge } from "@/components/admin/projects/StatusBadge";
+import { requirePageAccess } from "@/lib/auth/require-page-access";
 
 export default async function ProjectsPage() {
+  await requirePageAccess({ lead: ["read"] });
   const projects = await getProjects();
 
   return (

@@ -1,4 +1,5 @@
 import { DashboardOverview } from "@/components/admin/dashboard/dashboard-overview";
+import { requirePageAccess } from "@/lib/auth/require-page-access";
 import {
   getDashboardStats,
   getLeads,
@@ -6,6 +7,7 @@ import {
 } from "@/lib/data/index";
 
 export default async function AdminPage() {
+  await requirePageAccess({ lead: ["read"] });
   const [stats, leads, pulseProjects] = await Promise.all([
     getDashboardStats(),
     getLeads(),

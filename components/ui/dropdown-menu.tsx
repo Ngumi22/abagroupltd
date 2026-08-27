@@ -94,7 +94,7 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "group/dropdown-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper not-data-[variant=destructive]:focus:**:text-paper data-inset:pl-7 data-[variant=destructive]:text-red-700 data-[variant=destructive]:focus:bg-red-700/10 data-[variant=destructive]:focus:text-red-700 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-red-700",
+        "group/dropdown-menu-item relative flex cursor-default items-center gap-1.5 rounded-xs px-1.5 py-1 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper not-data-[variant=destructive]:focus:**:text-paper data-inset:pl-7 data-[variant=destructive]:text-red-700 data-[variant=destructive]:focus:bg-red-700/10 data-[variant=destructive]:focus:text-red-700 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-red-700",
         className,
       )}
       {...props}
@@ -119,7 +119,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper not-data-[variant=destructive]:focus:**:text-paper data-inset:pl-7 data-popup-open:bg-bronze data-popup-open:text-paper data-open:bg-bronze data-open:text-paper [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex cursor-default items-center gap-1.5 rounded-xs px-1.5 py-1 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper not-data-[variant=destructive]:focus:**:text-paper data-inset:pl-7 data-popup-open:bg-bronze data-popup-open:text-paper data-open:bg-bronze data-open:text-paper [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
@@ -168,7 +168,7 @@ function DropdownMenuCheckboxItem({
       data-slot="dropdown-menu-checkbox-item"
       data-inset={inset}
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper focus:**:text-paper data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex cursor-default items-center gap-1.5 rounded-xs py-1 pr-8 pl-1.5 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper focus:**:text-paper data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       checked={checked}
@@ -209,7 +209,7 @@ function DropdownMenuRadioItem({
       data-slot="dropdown-menu-radio-item"
       data-inset={inset}
       className={cn(
-        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper focus:**:text-paper data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex cursor-default items-center gap-1.5 rounded-xs py-1 pr-8 pl-1.5 text-sm text-ink outline-hidden select-none focus:bg-bronze focus:text-paper focus:**:text-paper data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}

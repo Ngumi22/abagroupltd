@@ -3,7 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin as adminPlugin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { prisma } from "@/lib/prisma";
-import { ac, admin, staff } from "@/lib/auth/permissions";
+import { ac, admin, staff, writer } from "@/lib/auth/permissions";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
@@ -32,7 +32,7 @@ export const auth = betterAuth({
   plugins: [
     adminPlugin({
       ac,
-      roles: { admin, staff },
+      roles: { admin, staff, writer },
       adminRoles: ["admin"],
       defaultRole: "staff",
       adminUserIds: [],

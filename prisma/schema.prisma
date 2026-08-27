@@ -26,6 +26,9 @@ model User {
   sessions Session[]
   accounts Account[]
 
+  blogs Blog[]
+
+
   @@unique([email])
   @@map("user")
 }
@@ -205,6 +208,9 @@ model Blog {
   publishedAt     DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@map("blog")
 }

@@ -34,7 +34,9 @@ export function AdminLoginForm() {
       setError(
         signInError.status === 403
           ? "Your account has been suspended. Contact an administrator."
-          : "Invalid email or password.",
+          : signInError.status === 429
+            ? "Too many attempts. Please wait a minute and try again."
+            : "Invalid email or password.",
       );
       return;
     }
@@ -44,7 +46,7 @@ export function AdminLoginForm() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-paper px-5 py-12 text-ink">
+    <main className="flex min-h-screen items-center justify-center bg-paper p-5 text-ink">
       <div className="w-full max-w-md">
         <a href="/" className="flex items-center gap-3">
           <span className="font-serif text-5xl text-bronze-dark">A</span>
@@ -55,15 +57,15 @@ export function AdminLoginForm() {
             </small>
           </span>
         </a>
-        <div className="mt-12 border border-ink/15 bg-paper p-7 shadow-sm sm:p-10">
+        <div className="mt-6 border border-ink/15 bg-paper p-7 shadow-sm sm:p-10">
           <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-bronze-dark">
             Restricted access
           </p>
-          <h1 className="mt-3 font-serif text-4xl">Welcome back.</h1>
-          <p className="mt-3 text-sm leading-6 text-ink/60">
+          <h1 className="mt-2 font-serif text-4xl">Welcome back.</h1>
+          <p className="mt-2 text-sm leading-6 text-ink/60">
             Sign in to access the Aba Group admin workspace.
           </p>
-          <form onSubmit={submit} className="mt-8 grid gap-5">
+          <form onSubmit={submit} className="mt-5 grid gap-5">
             <label className="text-[10px] font-semibold uppercase tracking-widest">
               Email
               <input

@@ -1,15 +1,11 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import dynamic from "next/dynamic";
-import remarkGfm from "remark-gfm";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import type { Blog } from "@/generated/prisma/client";
 import type { BlogActionState } from "@/lib/actions/blog";
-import "@uiw/react-md-editor/markdown-editor.css";
 import { ImageUploader } from "../upload/image-uploader";
-
-const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+import { TiptapEditor } from "./tiptap-editor";
 
 const initialState: BlogActionState = { status: "idle" };
 const inputClass =
@@ -88,6 +84,7 @@ export function BlogForm({ action, blog }: BlogFormProps) {
             onChange={setCoverImage}
             folder="/blog/covers"
             label="cover image"
+            resource="blog"
           />
           <input type="hidden" name="coverImage" value={coverImage} />
         </Field>
@@ -121,17 +118,15 @@ export function BlogForm({ action, blog }: BlogFormProps) {
         <p className="text-[10px] uppercase tracking-widest">
           Content{" "}
           <span className="text-ink/40">
-            — use the toolbar to insert tables and images
+            — use the toolbar to add images and tables
           </span>
         </p>
 
-        <div className="mt-3" data-color-mode="light">
-          <MDEditor
-            value={content}
-            onChange={(value) => setContent(value ?? "")}
-            height={420}
-            preview="live"
-            previewOptions={{ remarkPlugins: [remarkGfm] }}
+        <div className="mt-3">
+          <TiptapEditor
+            content={content}
+            onChange={setContent}
+            resource={"blog"}
           />
         </div>
         <input type="hidden" name="content" value={content} />

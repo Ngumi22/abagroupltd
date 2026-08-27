@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import {
   useTable,
   type ColumnDef,
@@ -46,6 +46,11 @@ interface DataTableProps<TData extends RowData> {
   description?: string;
   emptyMessage?: string;
   pageSize?: number;
+  // Optional inline-expand support (e.g. an edit or "convert" form shown
+  // directly below a row) — mirrors the same expand-below-the-row pattern
+  // used elsewhere in the admin (e.g. branch editing).
+  isRowExpanded?: (row: TData) => boolean;
+  renderExpandedContent?: (row: TData) => React.ReactNode;
 }
 
 export function DataTable<TData extends RowData>({
@@ -60,6 +65,8 @@ export function DataTable<TData extends RowData>({
   description,
   emptyMessage = "No results found.",
   pageSize = 10,
+  isRowExpanded,
+  renderExpandedContent,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -135,6 +142,7 @@ export function DataTable<TData extends RowData>({
             (c) =>
               c.column.id !== "actions" && !primaryIds.includes(c.column.id),
           );
+          const expanded = isRowExpanded?.(row.original) ?? false;
           return (
             <li
               key={row.id}
@@ -164,6 +172,11 @@ export function DataTable<TData extends RowData>({
                       <table.FlexRender cell={cell} />
                     </div>
                   ))}
+                </div>
+              )}
+              {expanded && renderExpandedContent && (
+                <div className="pt-3">
+                  {renderExpandedContent(row.original)}
                 </div>
               )}
             </li>
@@ -201,25 +214,40 @@ export function DataTable<TData extends RowData>({
           </TableHeader>
           <TableBody>
             {rows.length ? (
-              rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getAllCells().map((cell) => {
-                    const meta = columnMeta[cell.column.id];
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={
-                          meta?.hideBelow
-                            ? HIDE_BELOW_CLASS[meta.hideBelow]
-                            : ""
-                        }
-                      >
-                        <table.FlexRender cell={cell} />
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))
+              rows.map((row) => {
+                const expanded = isRowExpanded?.(row.original) ?? false;
+                return (
+                  <Fragment key={row.id}>
+                    <TableRow>
+                      {row.getAllCells().map((cell) => {
+                        const meta = columnMeta[cell.column.id];
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={
+                              meta?.hideBelow
+                                ? HIDE_BELOW_CLASS[meta.hideBelow]
+                                : ""
+                            }
+                          >
+                            <table.FlexRender cell={cell} />
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    {expanded && renderExpandedContent && (
+                      <TableRow>
+                        <TableCell
+                          colSpan={columns.length}
+                          className="bg-[#eee9df]/40"
+                        >
+                          {renderExpandedContent(row.original)}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell

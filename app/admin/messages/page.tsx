@@ -1,8 +1,10 @@
 import { InquiriesList } from "@/components/admin/dashboard/inquiries-list";
 import AdminPageFrame from "@/components/admin/pages/AdminPageFrame";
+import { requirePageAccess } from "@/lib/auth/require-page-access";
 import { getInquiries } from "@/lib/data/inquiries";
 
 export default async function MessagesPage() {
+  await requirePageAccess({ inquiry: ["read"] });
   const inquiries = await getInquiries();
 
   return (

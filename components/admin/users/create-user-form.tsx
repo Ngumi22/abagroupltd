@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { createDashboardUser, type ActionState } from "@/lib/actions/users";
 
 const initialState: ActionState = { status: "idle" };
@@ -9,19 +10,36 @@ const inputClass =
   "mt-1 w-full border-b border-ink/30 bg-transparent py-2 text-sm outline-none placeholder:text-ink/40";
 
 export function CreateUserForm({ onSuccess }: { onSuccess?: () => void }) {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     createDashboardUser,
     initialState,
   );
   const [showPassword, setShowPassword] = useState(false);
+  const [justCreated, setJustCreated] = useState(false);
   const wasPending = useRef(false);
 
   useEffect(() => {
     if (wasPending.current && !isPending && state.status !== "error") {
-      onSuccess?.();
+      setJustCreated(true);
+      router.refresh();
+      const timeout = setTimeout(() => {
+        setJustCreated(false);
+        onSuccess?.();
+      }, 1100);
+      return () => clearTimeout(timeout);
     }
     wasPending.current = isPending;
-  }, [isPending, state, onSuccess]);
+  }, [isPending, state, onSuccess, router]);
+
+  if (justCreated) {
+    return (
+      <div className="flex items-center gap-2 border border-ink/10 bg-white/40 p-6 text-sm text-ink/70">
+        <CheckCircle2 size={16} className="text-bronze-dark" />
+        Account created — closing…
+      </div>
+    );
+  }
 
   return (
     <form
@@ -73,9 +91,10 @@ export function CreateUserForm({ onSuccess }: { onSuccess?: () => void }) {
         <select
           required
           name="role"
-          defaultValue="staff"
+          defaultValue="writer"
           className={inputClass}
         >
+          <option value="writer">Writer (blog only)</option>
           <option value="staff">Staff</option>
           <option value="admin">Admin</option>
         </select>

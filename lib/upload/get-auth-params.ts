@@ -11,8 +11,11 @@ export interface UploadAuthBatch {
 
 export async function getUploadAuthParams(
   count: number,
+  resource: string,
 ): Promise<UploadAuthBatch> {
-  const response = await fetch(`/api/upload-auth?count=${count}`);
+  const response = await fetch(
+    `/api/upload-auth?count=${count}&resource=${resource}`,
+  );
   if (!response.ok) throw new Error("Not authorized to upload images.");
   return response.json() as Promise<UploadAuthBatch>;
 }

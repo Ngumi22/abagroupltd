@@ -47,6 +47,9 @@ export default async function AdminBlogsPage() {
                 <p className="mt-1 truncate text-xs text-ink/50">
                   {blog.excerpt}
                 </p>
+                <p className="mt-0.5 text-[10px] uppercase tracking-widest text-ink/40">
+                  By {blog.author?.name ?? "Aba Group"}
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <Link
@@ -57,7 +60,7 @@ export default async function AdminBlogsPage() {
                   <Pencil size={16} />
                 </Link>
                 <DeleteIconButton
-                  onDelete={() => deleteBlog(blog.id)}
+                  onDelete={deleteBlog.bind(null, blog.id)}
                   confirmMessage={`Delete "${blog.title}"?`}
                 />
               </div>

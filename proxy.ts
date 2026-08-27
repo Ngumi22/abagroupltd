@@ -1,4 +1,3 @@
-// proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
@@ -55,7 +54,12 @@ export default function proxy(request: NextRequest) {
     return redirectResponse;
   }
 
-  const response = NextResponse.next();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", path);
+
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
   applySecurityHeaders(response.headers, contentSecurityPolicyHeaderValue);
 

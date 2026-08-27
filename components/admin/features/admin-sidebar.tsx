@@ -3,19 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
-import { NAV_ITEMS } from "./nav-config";
+import { NAV_ITEMS, type DashboardRole } from "./nav-config";
 
 interface AdminSidebarProps {
   open: boolean;
   onClose: () => void;
-  role?: string | null;
+  role?: DashboardRole | null;
 }
+
+const DEFAULT_ROLES: DashboardRole[] = ["admin", "staff"];
 
 export function AdminSidebar({ open, onClose, role }: AdminSidebarProps) {
   const pathname = usePathname();
-  const visibleItems = NAV_ITEMS.filter(
-    (item) => !item.adminOnly || role === "admin",
-  );
+  const visibleItems = NAV_ITEMS.filter((item) => {
+    const allowedRoles = item.roles ?? DEFAULT_ROLES;
+    return role ? allowedRoles.includes(role) : false;
+  });
 
   return (
     <>
@@ -33,7 +36,7 @@ export function AdminSidebar({ open, onClose, role }: AdminSidebarProps) {
         }`}
       >
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/admin" className="flex items-center gap-3">
             <span className="font-serif text-4xl text-bronze">A</span>
             <span className="text-xs tracking-[.28em]">
               ABA GROUP

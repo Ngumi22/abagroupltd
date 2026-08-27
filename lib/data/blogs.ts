@@ -3,9 +3,12 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { Blog } from "@/generated/prisma/client";
 
-export const getAllBlogsForAdmin = cache(async (): Promise<Blog[]> => {
-  return prisma.blog.findMany({ orderBy: { createdAt: "desc" } });
-});
+export async function getAllBlogsForAdmin() {
+  return prisma.blog.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { author: { select: { name: true } } },
+  });
+}
 
 export const getBlogById = cache(async (id: string): Promise<Blog | null> => {
   return prisma.blog.findUnique({ where: { id } });

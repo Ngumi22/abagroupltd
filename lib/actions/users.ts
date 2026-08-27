@@ -9,6 +9,8 @@ import { createDashboardUserSchema } from "@/lib/validations/user";
 export type ActionState = { status: "idle" | "error"; message?: string };
 const idle: ActionState = { status: "idle" };
 
+export type DashboardRole = "admin" | "staff" | "writer";
+
 export async function createDashboardUser(
   _prev: ActionState,
   formData: FormData,
@@ -37,14 +39,14 @@ export async function createDashboardUser(
     };
   }
 
-  void session; // available if you want to log who created whom
+  void session;
   revalidatePath("/admin/users");
   return idle;
 }
 
 export async function setDashboardUserRole(
   userId: string,
-  role: "admin" | "staff",
+  role: DashboardRole,
 ) {
   const session = await requirePermission({ user: ["set-role"] });
 

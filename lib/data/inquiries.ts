@@ -1,8 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+
 import { prisma } from "@/lib/prisma";
 import type { Inquiry, InquiryStatus } from "@/generated/prisma/client";
 import { requirePermission } from "../auth/require-permission";

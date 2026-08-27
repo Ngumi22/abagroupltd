@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Archive, Mail, MailOpen, UserPlus } from "lucide-react";
 import { FilterTabs } from "@/components/admin/dashboard/filter-tabs";
 import { InquiryStatusBadge } from "./inquiry-status-badge";
-import { Inquiry, InquiryStatus } from "@/generated/prisma/client";
+import type { Inquiry, InquiryStatus } from "@/generated/prisma/client";
 import { updateInquiryStatus } from "@/lib/data/inquiries";
 import { formatDate } from "@/lib/utils";
 import { ConvertToLeadForm } from "../messages/convert-to-lead-form";
-import { DataTable, DataTableColumn } from "../data-table/data-table";
+import { DataTable } from "../data-table/data-table";
+import type { DataTableFeatures } from "../data-table/data-table-features";
 
 const FILTERS = ["All", "New", "Read", "Archived"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -53,41 +55,50 @@ export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
     );
   }
 
-  const columns: DataTableColumn<Inquiry>[] = [
+  const columns: ColumnDef<DataTableFeatures, Inquiry>[] = [
     {
-      key: "from",
+      id: "from",
       header: "From",
-      primary: true,
-      searchValue: (inquiry) => `${inquiry.name} ${inquiry.email}`,
-      accessor: (inquiry) => (
+      cell: ({ row }) => (
         <div>
-          <p className="font-medium">{inquiry.name}</p>
-          <p className="text-xs text-ink/50">{inquiry.email}</p>
+          <p className="font-medium">{row.original.name}</p>
+          <p className="text-xs text-ink/50">{row.original.email}</p>
         </div>
       ),
     },
     {
-      key: "message",
+      id: "message",
       header: "Message",
-      hideBelow: "md",
-      searchValue: (inquiry) => inquiry.message,
-      accessor: (inquiry) => (
-        <p className="line-clamp-2 max-w-80 text-ink/60">{inquiry.message}</p>
+      cell: ({ row }) => (
+        <p className="line-clamp-2 max-w-80 text-ink/60">
+          {row.original.message}
+        </p>
       ),
     },
     {
-      key: "status",
+      id: "status",
       header: "Status",
-      accessor: (inquiry) => <InquiryStatusBadge status={inquiry.status} />,
+      cell: ({ row }) => <InquiryStatusBadge status={row.original.status} />,
     },
     {
-      key: "received",
+      id: "received",
       header: "Received",
-      hideBelow: "lg",
-      accessor: (inquiry) => (
+      cell: ({ row }) => (
         <span className="text-xs text-ink/50">
-          {formatDate(inquiry.createdAt)}
+          {formatDate(row.original.createdAt)}
         </span>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <InquiryActions
+          inquiry={row.original}
+          isPending={isPending && pendingId === row.original.id}
+          onStatusChange={handleStatusChange}
+          onConvert={handleToggleConvert}
+        />
       ),
     },
   ];
@@ -96,7 +107,14 @@ export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
     <DataTable
       data={visible}
       columns={columns}
-      keyExtractor={(inquiry) => inquiry.id}
+      columnMeta={{
+        from: { primary: true },
+        message: { hideBelow: "md" },
+        received: { hideBelow: "lg" },
+      }}
+      getSearchText={(inquiry) =>
+        `${inquiry.name} ${inquiry.email} ${inquiry.message}`
+      }
       searchPlaceholder="Search messages by name or email…"
       filters={
         <FilterTabs options={FILTERS} value={filter} onChange={setFilter} />
@@ -107,14 +125,6 @@ export function InquiriesList({ inquiries }: { inquiries: Inquiry[] }) {
         <ConvertToLeadForm
           inquiryId={inquiry.id}
           onDone={() => setConvertingId(null)}
-        />
-      )}
-      renderRowActions={(inquiry) => (
-        <InquiryActions
-          inquiry={inquiry}
-          isPending={isPending && pendingId === inquiry.id}
-          onStatusChange={handleStatusChange}
-          onConvert={handleToggleConvert}
         />
       )}
     />

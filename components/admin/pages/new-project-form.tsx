@@ -229,6 +229,7 @@ export function ProjectForm({ project }: { project?: ProjectFormData }) {
           onChange={(url) => update("image", url)}
           folder="/projects/covers"
           label="cover image"
+          resource="project"
         />
         <input type="hidden" name="image" value={draft.image} />
       </Field>

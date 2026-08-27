@@ -158,3 +158,24 @@ body {
     @apply font-sans;
   }
 }
+
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+.tiptap table td,
+.tiptap table th {
+  border: 1px solid var(--color-ink, #1a1a1a);
+  border-color: color-mix(in srgb, currentColor 15%, transparent);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.tiptap table th {
+  font-weight: 600;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+}

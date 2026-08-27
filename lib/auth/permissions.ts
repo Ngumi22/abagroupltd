@@ -26,5 +26,9 @@ export const staff = ac.newRole({
   inquiry: ["read", "update"],
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update"],
-  blog: ["create", "read", "update"], // no delete — publishing mistakes get unpublished, not erased, by staff
+  blog: ["create", "read", "update"],
+});
+
+export const writer = ac.newRole({
+  blog: ["create", "read", "update"],
 });
