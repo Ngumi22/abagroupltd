@@ -11,6 +11,7 @@ interface GalleryUploaderProps {
   value: string[];
   onChange: (urls: string[]) => void;
   folder?: string;
+  resource: "blog" | "project" | "branch";
 }
 
 interface PendingItem {
@@ -22,6 +23,7 @@ export function GalleryUploader({
   value,
   onChange,
   folder = "/uploads/gallery",
+  resource,
 }: GalleryUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -42,7 +44,10 @@ export function GalleryUploader({
     setIsUploading(true);
 
     try {
-      const { publicKey, params } = await getUploadAuthParams(files.length);
+      const { publicKey, params } = await getUploadAuthParams(
+        files.length,
+        resource,
+      );
 
       const results = await Promise.allSettled(
         files.map((file, i) =>

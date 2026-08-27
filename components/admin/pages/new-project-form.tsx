@@ -243,6 +243,7 @@ export function ProjectForm({ project }: { project?: ProjectFormData }) {
           value={draft.gallery}
           onChange={(urls) => update("gallery", urls)}
           folder="/projects/gallery"
+          resource="project"
         />
       </Field>
 
