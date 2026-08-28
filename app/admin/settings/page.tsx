@@ -10,15 +10,20 @@ import {
 } from "@/lib/data/contact-info";
 import AdminPageFrame from "@/components/admin/pages/AdminPageFrame";
 import { requirePageAccess } from "@/lib/auth/require-page-access";
+import { TestimonialsManager } from "@/components/admin/testimonials/manage";
+import { getTestimonials } from "@/lib/data/reviews";
 
 export default async function AdminSettingsPage() {
   await requirePageAccess({ contactInfo: ["read"] });
-  const [branches, phones, emails, socialLinks] = await Promise.all([
-    getBranches(),
-    getContactPhones(),
-    getContactEmails(),
-    getSocialLinks(),
-  ]);
+  <TestimonialsManager testimonials={[]} />;
+  const [branches, phones, emails, socialLinks, testimonials] =
+    await Promise.all([
+      getBranches(),
+      getContactPhones(),
+      getContactEmails(),
+      getSocialLinks(),
+      getTestimonials(),
+    ]);
 
   return (
     <AdminPageFrame
@@ -33,6 +38,7 @@ export default async function AdminSettingsPage() {
           <ContactEmailsSection emails={emails} />
         </div>
         <SocialLinksSection socialLinks={socialLinks} />
+        <TestimonialsManager testimonials={testimonials} />
       </div>
     </AdminPageFrame>
   );

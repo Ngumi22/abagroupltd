@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   FileText,
   FolderKanban,
+  GalleryHorizontal,
   LayoutDashboard,
   MessageSquare,
   Settings,
@@ -28,6 +29,7 @@ export const NAV_ITEMS: NavItem[] = [
     icon: FileText,
     roles: ["admin", "staff", "writer"],
   },
+  { label: "Gallery", href: "/admin/gallery", icon: GalleryHorizontal },
   { label: "Messages", href: "/admin/messages", icon: MessageSquare },
   { label: "Settings", href: "/admin/settings", icon: Settings },
   { label: "Users", href: "/admin/users", icon: Shield, roles: ["admin"] },

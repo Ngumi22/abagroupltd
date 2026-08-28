@@ -50,3 +50,18 @@ export const DEFAULT_BACKGROUND_IMAGE =
   "https://ik.imagekit.io/abagroup/projects/covers/1_pZcZ-r49u.png?updatedAt=1787842415214";
 
 export const LAST_UPDATED = "August 28, 2026";
+
+export const footerLinks = {
+  Explore: [
+    ["About us", "/#about"],
+    ["Our services", "/services"],
+    ["Projects", "/projects"],
+    ["Blogs", "/blogs"],
+  ],
+  Services: [
+    ["Architecture & design", "/services"],
+    ["Residential construction", "/services"],
+    ["Commercial builds", "/services"],
+    ["Interiors & fit-outs", "/services"],
+  ],
+} as const;

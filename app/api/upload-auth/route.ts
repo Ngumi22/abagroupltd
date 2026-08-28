@@ -11,6 +11,7 @@ const RESOURCE_PERMISSIONS: Record<string, PermissionMap> = {
   blog: { blog: ["create"] },
   project: { project: ["create"] },
   contactInfo: { contactInfo: ["create"] },
+  gallery: { gallery: ["create"] },
 };
 
 export async function GET(request: Request) {

@@ -219,3 +219,41 @@ enum BlogStatus {
   DRAFT
   PUBLISHED
 }
+
+model GalleryImage {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  category       String
+  alt            String
+  imageUrl       String
+  imagekitFileId String?
+  width          Int
+  height         Int
+  featured       Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("gallery_image")
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  externalId String?  @unique
+  name       String
+  quote      String   @db.Text
+  rating     Int
+  source     String   @default("Manual")
+
+  role    String?
+  project String?
+
+  featured Boolean @default(false)
+
+  reviewedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}

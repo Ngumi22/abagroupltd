@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa6";
 import type { IconType } from "react-icons";
 import { Logo } from "./shared";
-import { SITE } from "@/lib/constants";
+import { footerLinks, SITE } from "@/lib/constants";
 import {
   getContactEmails,
   getContactPhones,
@@ -19,21 +19,6 @@ import {
   getSocialLinks,
 } from "@/lib/data/contact-info";
 import type { SocialPlatform } from "@/generated/prisma/client";
-
-const footerLinks = {
-  Explore: [
-    ["About us", "/#about"],
-    ["Our services", "/services"],
-    ["Projects", "/projects"],
-    ["Blogs", "/blogs"],
-  ],
-  Services: [
-    ["Architecture & design", "/services"],
-    ["Residential construction", "/services"],
-    ["Commercial builds", "/services"],
-    ["Interiors & fit-outs", "/services"],
-  ],
-} as const;
 
 const SOCIAL_ICON: Record<SocialPlatform, IconType> = {
   FACEBOOK: FaFacebook,
@@ -94,17 +79,17 @@ export async function Footer() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
 
-      <div className="mx-auto max-w-7xl px-5 pb-7 pt-14 sm:pt-20 lg:px-10">
-        <div className="grid gap-12 border-b border-paper/15 pb-14 lg:grid-cols-[1.3fr_.8fr_.8fr_1fr] lg:gap-10">
+      <div className="mx-auto max-w-7xl px-5 pb-7 pt-10 sm:pt-14 lg:px-10">
+        <div className="grid gap-12 border-b border-paper/15 pb-10 lg:grid-cols-[1.3fr_.8fr_.8fr_1fr] lg:gap-10">
           <div className="max-w-sm">
             <Logo />
-            <p className="mt-7 max-w-xs text-sm leading-7 text-paper/60">
+            <p className="mt-5 max-w-xs text-sm leading-7 text-paper/60">
               Thoughtful spaces, carefully built. Aba Group delivers design and
               construction with clarity across Kenya.
             </p>
             <Link
               href="/#contact"
-              className="mt-8 inline-flex items-center gap-3 border border-bronze bg-bronze px-5 py-3 text-[10px] font-medium uppercase tracking-[.16em] text-ink transition-colors hover:bg-paper"
+              className="mt-5 inline-flex items-center gap-3 border border-bronze bg-bronze px-5 py-3 text-[10px] font-medium uppercase tracking-[.16em] text-ink transition-colors hover:bg-paper"
             >
               Start a conversation <ArrowUpRight size={14} />
             </Link>
@@ -133,6 +118,10 @@ export async function Footer() {
             <h2 className="text-[10px] uppercase tracking-[.22em] text-bronze">
               Contact
             </h2>
+            <p className="mt-5 text-sm text-paper/65">
+              Get in touch with us for more information or to schedule a
+              consultation.
+            </p>
             <div className="mt-5 flex flex-col gap-4 text-sm text-paper/65">
               {phones.map((phone) => (
                 <Link
@@ -167,7 +156,7 @@ export async function Footer() {
             </div>
 
             {socialLinks.length > 0 && (
-              <div className="mt-7 flex gap-3">
+              <div className="mt-5 flex gap-3">
                 {socialLinks.map((social) => {
                   const Icon = SOCIAL_ICON[social.platform];
                   return (
@@ -188,7 +177,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 pt-6 text-[10px] uppercase tracking-[.12em] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 pt-4 text-[10px] uppercase tracking-[.12em] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[10px] uppercase tracking-widest">
             © {currentYear} {SITE.name}. Built for better places.
           </p>

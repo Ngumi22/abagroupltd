@@ -242,7 +242,6 @@ export function Process() {
   );
 }
 
-/** Homepage teaser — shows 3 posts, links out to the full /blogs page */
 export function BlogsTeaser({ blogs }: { blogs: Blog[] }) {
   const featured = blogs.slice(0, 3);
 

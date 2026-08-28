@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Testimonial" ADD COLUMN     "reviewedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

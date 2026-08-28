@@ -107,3 +107,36 @@ export interface DashboardStat {
   trend: string;
   icon: LucideIcon;
 }
+
+export type GalleryImage = {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  alt: string;
+  src: string;
+  width: number;
+  height: number;
+  featured: boolean;
+  sortOrder: number;
+};
+
+export type Testimonial = {
+  id: string;
+  quote: string;
+  name: string;
+  role: string;
+  project: string;
+  source: string;
+  rating: number;
+};
+
+export interface InstagramPost {
+  id: string;
+  caption?: string;
+  media_type: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
+  media_url: string;
+  permalink: string;
+  thumbnail_url?: string;
+  timestamp: string;
+}

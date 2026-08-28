@@ -11,6 +11,10 @@ import {
 import { Contact } from "@/components/site/contact";
 import { getPublishedBlogs } from "@/lib/data/blogs";
 import { getProjects } from "@/lib/data/index";
+import { GallerySection } from "@/components/site/gallery";
+import { getGalleryImages } from "@/lib/data/gallery";
+import { Testimonials } from "@/components/site/testimonials";
+import { getFeaturedTestimonials } from "@/lib/data/reviews";
 
 export const metadata: Metadata = {
   title: "Aba Group Ltd | Construction & Development in Kenya",
@@ -20,9 +24,11 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [blogs, projects] = await Promise.all([
+  const [blogs, projects, galleryImages, testimonials] = await Promise.all([
     getPublishedBlogs(),
     getProjects(),
+    getGalleryImages(),
+    getFeaturedTestimonials(),
   ]);
 
   const projectsCompleted = projects.filter(
@@ -37,6 +43,8 @@ export default async function HomePage() {
       <ProjectsPreview projects={projects} />
       <ServicesTeaser />
       <Process />
+      <GallerySection images={galleryImages} />
+      <Testimonials testimonials={testimonials} />
       <BlogsTeaser blogs={blogs} />
       <Contact />
     </main>

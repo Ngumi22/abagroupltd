@@ -8,6 +8,7 @@ export const statement = {
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update", "delete"],
   blog: ["create", "read", "update", "delete"],
+  gallery: ["create", "read", "update", "delete"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -19,6 +20,7 @@ export const admin = ac.newRole({
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update", "delete"],
   blog: ["create", "read", "update", "delete"],
+  gallery: ["create", "read", "update", "delete"],
 });
 
 export const staff = ac.newRole({
@@ -27,6 +29,7 @@ export const staff = ac.newRole({
   contactInfo: ["create", "read", "update", "delete"],
   lead: ["create", "read", "update"],
   blog: ["create", "read", "update"],
+  gallery: ["create", "read", "update", "delete"],
 });
 
 export const writer = ac.newRole({
