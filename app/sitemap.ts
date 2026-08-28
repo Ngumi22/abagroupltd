@@ -1,43 +1,43 @@
 import { getPublishedBlogs } from "@/lib/data/blogs";
 import { getProjects } from "@/lib/data/projects";
 import { MetadataRoute } from "next";
-
-const BASE_URL = "https://abagroupltd.co.ke";
+import { toISOString } from "@/lib/utils";
+import { SITE } from "@/lib/constants";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: `${BASE_URL}`,
+      url: `${SITE.siteUrl}`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1.0,
     },
     {
-      url: `${BASE_URL}/about`,
+      url: `${SITE.siteUrl}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/services`,
+      url: `${SITE.siteUrl}/services`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
-      url: `${BASE_URL}/projects`,
+      url: `${SITE.siteUrl}/projects`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: `${BASE_URL}/blogs`,
+      url: `${SITE.siteUrl}/blogs`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/contact`,
+      url: `${SITE.siteUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
@@ -46,16 +46,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const projects = await getProjects();
   const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
-    url: `${BASE_URL}/projects/${project.slug}`,
-    lastModified: project.updatedAt || new Date(),
+    url: `${SITE.siteUrl}/projects/${project.slug}`,
+    lastModified: toISOString(project.updatedAt) ?? new Date().toISOString(),
     changeFrequency: "weekly",
     priority: 0.8,
   }));
 
   const blogs = await getPublishedBlogs();
   const blogRoutes: MetadataRoute.Sitemap = blogs.map((blog) => ({
-    url: `${BASE_URL}/blogs/${blog.slug}`,
-    lastModified: blog.updatedAt || new Date(),
+    url: `${SITE.siteUrl}/blogs/${blog.slug}`,
+    lastModified: toISOString(blog.updatedAt) ?? new Date().toISOString(),
     changeFrequency: "monthly",
     priority: 0.7,
   }));

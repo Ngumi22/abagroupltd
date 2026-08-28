@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed:admins": "npx tsx --env-file=.env prisma/seed-admins.ts",
-    "seed:projects": "npx tsx --env-file=.env prisma/seed-projects.ts"
+    "seed:projects": "npx tsx --env-file=.env prisma/seed-projects.ts",
+    "og:preview": "tsx scripts/test-og.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
@@ -32,6 +33,7 @@
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.2",
     "@vercel/analytics": "1.6.1",
+    "@vercel/og": "^1.0.2",
     "better-auth": "^1.6.29",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -42,6 +44,7 @@
     "pg": "^8.23.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-icons": "^5.7.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "resend": "^6.20.0",

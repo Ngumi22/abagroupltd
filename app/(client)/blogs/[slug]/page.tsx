@@ -3,7 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getPublishedBlogBySlug } from "@/lib/data/blogs";
 import { SITE } from "@/lib/constants";
-import { formatDate } from "@/lib/utils";
+import { formatDate, toISOString } from "@/lib/utils";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -29,16 +29,12 @@ export async function generateMetadata({
       description,
       url,
       type: "article",
-      publishedTime: blog.publishedAt
-        ? formatDate(blog.publishedAt)
-        : undefined,
-      images: [{ url: blog.coverImage }],
+      publishedTime: toISOString(blog.publishedAt),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [blog.coverImage],
     },
   };
 }
@@ -54,8 +50,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     headline: blog.title,
     description: blog.excerpt,
     image: blog.coverImage,
-    datePublished: blog.publishedAt ? formatDate(blog.publishedAt) : undefined,
-    dateModified: formatDate(blog.updatedAt),
+    datePublished: toISOString(blog.publishedAt),
+    dateModified: toISOString(blog.updatedAt),
     author: { "@type": "Organization", name: SITE.name },
     publisher: { "@type": "Organization", name: SITE.name },
   };

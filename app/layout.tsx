@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Geist_Mono, Inter, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from "@/lib/constants";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -15,13 +16,12 @@ const cormorant = Cormorant_Garamond({
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://abagroupltd.co.ke"),
+  metadataBase: new URL(SITE.siteUrl),
   title: {
-    default: "Aba Group Ltd | Construction & Development in Kenya",
+    default: SITE_TITLE,
     template: "%s | Aba Group Ltd",
   },
-  description:
-    "Construction, architecture, and development in Kenya. Built with intention. Made to endure.",
+  description: SITE_DESCRIPTION,
   keywords: [
     "construction company Kenya",
     "building contractors Nairobi",
@@ -32,6 +32,19 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   verification: {
     google: "1RBRShyPWI9sqPKtnS8QVBDvCYvCVcQSaJqi0sf54SQ",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_KE",
+    url: "https://abagroupltd.co.ke",
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
   },
 };
 
@@ -46,12 +59,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={cn("bg-paper", "font-sans", geist.variable)}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={cn("bg-paper", "font-sans", geist.variable)}
+    >
       <body
         className={`${inter.variable} ${cormorant.variable} ${mono.variable} antialiased`}
       >
         {children}
-
         <Toaster />
       </body>
     </html>

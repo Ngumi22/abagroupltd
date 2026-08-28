@@ -131,8 +131,6 @@ export async function updateProject(
   redirect("/admin/projects?updated=1");
 }
 
-// lib/actions/projects.ts (or wherever your server actions are)
-
 export async function deleteProject(
   _prevState: ProjectActionState,
   formData: FormData,
@@ -145,12 +143,7 @@ export async function deleteProject(
   }
 
   try {
-    await prisma.project.delete({
-      where: { id },
-    });
-
-    revalidateProjectPaths();
-    redirect("/admin/projects?deleted=1");
+    await prisma.project.delete({ where: { id } });
   } catch (error) {
     console.error("Failed to delete project:", error);
     return {
@@ -158,6 +151,9 @@ export async function deleteProject(
       message: "Failed to delete project. Please try again.",
     };
   }
+
+  revalidateProjectPaths();
+  return { status: "idle" };
 }
 
 export async function updateProjectStatus(

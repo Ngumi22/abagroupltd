@@ -10,7 +10,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full ${styles[status]}`}
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${styles[status]}`}
     >
       {status}
     </span>

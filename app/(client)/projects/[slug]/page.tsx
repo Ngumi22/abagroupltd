@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectDetail } from "@/components/site/project-components";
 import { getProjectBySlug, getProjects } from "@/lib/data/index";
+import { SITE } from "@/lib/constants";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
@@ -16,14 +17,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) return { title: "Project not found" };
+
+  const url = `${SITE.siteUrl}/projects/${project.slug}`;
+
   return {
     title: project.name,
     description: project.summary,
-    alternates: { canonical: `/projects/${project.slug}` },
+    alternates: { canonical: url },
     openGraph: {
       title: `${project.name} | Aba Group Ltd`,
       description: project.summary,
-      images: [project.image],
+      url,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.name} | Aba Group Ltd`,
+      description: project.summary,
     },
   };
 }

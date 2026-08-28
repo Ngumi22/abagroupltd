@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { services } from "@/lib/data";
+import { services } from "@/lib/data/services";
 import { SectionLabel } from "@/components/site/shared";
 
 export const metadata: Metadata = {
@@ -23,9 +24,10 @@ export default function ServicesPage() {
         </p>
         <div className="mt-14 grid gap-px border border-paper/15 bg-paper/15 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => (
-            <div
-              key={service.number}
-              className="bg-ink p-6 transition duration-300 hover:bg-ink-soft"
+            <Link
+              key={service.slug}
+              href={`/services/${service.slug}`}
+              className="group bg-ink p-6 transition duration-300 hover:bg-ink-soft"
             >
               <span className="font-mono text-xs text-bronze">
                 {service.number}
@@ -34,8 +36,11 @@ export default function ServicesPage() {
               <p className="mt-3 text-sm leading-6 text-paper/55">
                 {service.description}
               </p>
-              <ArrowUpRight size={18} className="mt-8 text-bronze" />
-            </div>
+              <ArrowUpRight
+                size={18}
+                className="mt-8 text-bronze transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+              />
+            </Link>
           ))}
         </div>
       </div>

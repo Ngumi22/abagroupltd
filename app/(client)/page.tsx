@@ -9,6 +9,8 @@ import {
   Stats,
 } from "@/components/site/sections";
 import { Contact } from "@/components/site/contact";
+import { getPublishedBlogs } from "@/lib/data/blogs";
+import { getProjects } from "@/lib/data/index";
 
 export const metadata: Metadata = {
   title: "Aba Group Ltd | Construction & Development in Kenya",
@@ -17,16 +19,25 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [blogs, projects] = await Promise.all([
+    getPublishedBlogs(),
+    getProjects(),
+  ]);
+
+  const projectsCompleted = projects.filter(
+    (p) => p.status === "Completed",
+  ).length;
+
   return (
     <main>
       <Hero />
-      <Stats />
+      <Stats projectsCompleted={projectsCompleted} />
       <AboutTeaser />
-      <ProjectsPreview />
+      <ProjectsPreview projects={projects} />
       <ServicesTeaser />
       <Process />
-      <BlogsTeaser />
+      <BlogsTeaser blogs={blogs} />
       <Contact />
     </main>
   );

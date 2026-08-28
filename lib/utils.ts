@@ -19,3 +19,10 @@ export const formatCurrency = (amount: number, currency = "KES") =>
     currency,
     minimumFractionDigits: 2,
   }).format(amount);
+
+export function toISOString(
+  value: Date | string | null | undefined,
+): string | undefined {
+  if (!value) return undefined;
+  return new Date(value).toISOString();
+}

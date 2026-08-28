@@ -1,12 +1,12 @@
-"use client";
-
-import { useState } from "react";
-import { ArrowUpRight, Check, MoveRight, Phone } from "lucide-react";
-import { blogs, process, projects, services } from "@/lib/data";
+import { ArrowUpRight, MoveRight } from "lucide-react";
+import { process, services } from "@/lib/data";
 import { Button, SectionLabel } from "./shared";
-import { SITE } from "@/lib/constants";
+
 import Link from "next/link";
 import Image from "next/image";
+import type { Project } from "@/lib/types";
+import type { Blog } from "@/generated/prisma/client";
+import { formatDate } from "@/lib/utils";
 
 export function Hero() {
   return (
@@ -51,16 +51,18 @@ export function Hero() {
   );
 }
 
-export function Stats() {
+export function Stats({ projectsCompleted }: { projectsCompleted: number }) {
+  const stats: [string, string][] = [
+    ["12+", "Years of experience"],
+    [`${projectsCompleted}`, "Projects completed"],
+    ["98%", "Client satisfaction"],
+    ["24", "Industry awards"],
+  ];
+
   return (
     <div className="relative z-10 mx-auto -mt-10 max-w-6xl px-5">
       <div className="grid grid-cols-2 border border-paper/10 bg-ink/95 p-5 shadow-2xl backdrop-blur sm:grid-cols-4 sm:p-7">
-        {[
-          ["12+", "Years of experience"],
-          ["86", "Projects completed"],
-          ["98%", "Client satisfaction"],
-          ["24", "Industry awards"],
-        ].map(([n, l]) => (
+        {stats.map(([n, l]) => (
           <div
             key={l}
             className="border-paper/15 px-4 py-2 first:border-0 sm:border-l"
@@ -107,7 +109,9 @@ export function AboutTeaser() {
   );
 }
 
-export function ProjectsPreview() {
+export function ProjectsPreview({ projects }: { projects: Project[] }) {
+  const featured = projects.slice(0, 4);
+
   return (
     <section className="bg-paper pt-6 pb-20 text-ink lg:pt-8 lg:pb-28">
       <div className="mx-auto max-w-7xl px-5 lg:px-10">
@@ -123,39 +127,48 @@ export function ProjectsPreview() {
             View all projects
           </Button>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {projects.map((p) => (
-            <Link
-              href={`/projects/${p.slug}`}
-              key={p.slug}
-              className={`group relative min-h-72 overflow-hidden bg-ink ${p.slug === "kilimani-house" ? "sm:col-span-2 sm:row-span-2" : ""}`}
-            >
-              <Image
-                src={p.image}
-                alt={`${p.name} construction project`}
-                priority={p.slug === "kilimani-house"}
-                fill
-                quality={100}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-105 group-hover:opacity-100 background-no-repeat background-center background-cover"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-ink via-transparent to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
-                <span className="text-[9px] uppercase tracking-[.18em] text-bronze">
-                  {p.type}
-                </span>
-                <h3 className="mt-1 font-serif text-xl">{p.name}</h3>
-                <p className="mt-1 text-xs text-paper/60">{p.location}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+
+        {featured.length === 0 ? (
+          <p className="text-sm text-ink/50">No projects published yet.</p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.map((p, i) => (
+              <Link
+                href={`/projects/${p.slug}`}
+                key={p.slug}
+                className={`group relative min-h-72 overflow-hidden bg-ink ${
+                  i === 0 ? "sm:col-span-2 sm:row-span-2" : ""
+                }`}
+              >
+                <Image
+                  src={p.image}
+                  alt={`${p.name} construction project`}
+                  priority={i === 0}
+                  fill
+                  quality={100}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-ink via-transparent to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
+                  <span className="text-[9px] uppercase tracking-[.18em] text-bronze">
+                    {p.type}
+                  </span>
+                  <h3 className="mt-1 font-serif text-xl">{p.name}</h3>
+                  <p className="mt-1 text-xs text-paper/60">{p.location}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-/** Homepage teaser — shows 4 services, links out to the full /services page */
+/** Homepage teaser — shows 4 services, links out to the full /services page.
+ *  Static content: no Service model exists yet in the schema. If services
+ *  should be admin-editable, add a `Service` Prisma model + admin CRUD first. */
 export function ServicesTeaser() {
   return (
     <section className="bg-ink pt-6 pb-20 text-paper lg:pt-8 lg:pb-24">
@@ -196,6 +209,7 @@ export function ServicesTeaser() {
   );
 }
 
+/** Static content: no ProcessStep model exists in the schema either. */
 export function Process() {
   return (
     <section className="bg-paper pt-10 pb-20 text-ink lg:pt-14 lg:pb-24">
@@ -229,7 +243,9 @@ export function Process() {
 }
 
 /** Homepage teaser — shows 3 posts, links out to the full /blogs page */
-export function BlogsTeaser() {
+export function BlogsTeaser({ blogs }: { blogs: Blog[] }) {
+  const featured = blogs.slice(0, 3);
+
   return (
     <section className="bg-ink pt-6 pb-20 text-paper lg:pt-8 lg:pb-24">
       <div className="mx-auto max-w-7xl px-5 lg:px-10">
@@ -244,33 +260,38 @@ export function BlogsTeaser() {
             View all articles
           </Button>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {blogs.slice(0, 3).map((blog) => (
-            <a
-              href="/blogs"
-              key={blog.title}
-              className="group relative min-h-72 overflow-hidden border border-paper/15"
-            >
-              <Image
-                src={blog.image}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-700 group-hover:scale-105 group-hover:opacity-75"
-                height={400}
-                width={400}
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-ink to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <span className="text-[9px] uppercase tracking-widest text-bronze">
-                  {blog.date}
-                </span>
-                <h3 className="mt-2 font-serif text-2xl">{blog.title}</h3>
-                <span className="mt-5 inline-flex items-center gap-2 text-[9px] uppercase tracking-widest">
-                  Read article <MoveRight size={13} className="text-bronze" />
-                </span>
-              </div>
-            </a>
-          ))}
-        </div>
+
+        {featured.length === 0 ? (
+          <p className="text-sm text-paper/50">No articles published yet.</p>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-3">
+            {featured.map((blog) => (
+              <Link
+                href={`/blogs/${blog.slug}`}
+                key={blog.slug}
+                className="group relative min-h-72 overflow-hidden border border-paper/15"
+              >
+                <Image
+                  src={blog.coverImage}
+                  alt={blog.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-700 group-hover:scale-105 group-hover:opacity-75"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-ink to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <span className="text-[9px] uppercase tracking-widest text-bronze">
+                    {blog.publishedAt ? formatDate(blog.publishedAt) : ""}
+                  </span>
+                  <h3 className="mt-2 font-serif text-2xl">{blog.title}</h3>
+                  <span className="mt-5 inline-flex items-center gap-2 text-[9px] uppercase tracking-widest">
+                    Read article <MoveRight size={13} className="text-bronze" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

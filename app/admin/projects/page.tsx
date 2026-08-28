@@ -47,13 +47,13 @@ export default async function ProjectsPage() {
                 />
               </div>
             </div>
-            <div className="p-5">
+            <div className="p-3.5">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[.12em] text-bronze-dark">
                     {project.type}
                   </p>
-                  <h2 className="mt-2 font-serif text-2xl">{project.name}</h2>
+                  <h2 className="mt-2 font-serif text-xl">{project.name}</h2>
                 </div>
                 <StatusBadge status={project.status} />
               </div>
