@@ -10,7 +10,7 @@ export const SITE = {
   shortName: "ABA GROUP",
   tagline: "Construction & Development",
   region: "Kenya",
-  phone: "+254 700 123 456",
+  phone: "+254 728 485273",
   email: "contact@abagroup.co.ke",
   privacyemail: "privacy@abagroup.co.ke",
   address: "Nairobi, Kenya",

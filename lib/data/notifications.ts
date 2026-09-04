@@ -39,7 +39,7 @@ export async function getRecentNotifications(
       subtitle:
         i.message.length > 60 ? `${i.message.slice(0, 60)}…` : i.message,
       status: i.status,
-      href: "/admin/inquiries",
+      href: "/admin/messages",
       createdAt: i.createdAt,
     })),
     ...leads.map((l) => ({
